@@ -2240,7 +2240,7 @@ export default function App() {
             <span className="course-badge">หลักสูตรวิชาชีพระยะสั้น & ปวช.</span>
             
             <h1 className="welcome-title">การออกแบบติดต่อผู้ใช้</h1>
-            <div className="grade-badge">ระดับชั้นมัธยมศึกษา/วิชาชีพ ปวช.2 (สัปดาห์ที่ 1 - 2)</div>
+            <div className="grade-badge">ระดับชั้นปวช.2</div>
 
             {/* Instructor credit */}
             <div className="teacher-info-card">
