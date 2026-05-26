@@ -1867,7 +1867,7 @@ const PortfolioWireframeAnimation = () => {
           {/* Dotted annotation line pointing to image */}
           {!isHifi && (
             <div style={{ position: 'absolute', left: '-10px', top: '30px', fontSize: '8px', color: '#e11d48', fontWeight: 'bold', fontFamily: 'Kanit' }}>
-              รูปโปรไฟล์ (กากบาท) 👈
+              รูปโปรไฟล์ 👈
             </div>
           )}
         </div>
@@ -2042,7 +2042,7 @@ const GraphicDispatcher = ({ slide }) => {
 export default function App() {
   // Load slides from localStorage or fallback to initialSlides
   const [slides, setSlides] = useState(() => {
-    const saved = localStorage.getItem('school_slides_v10');
+    const saved = localStorage.getItem('school_slides_v11');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -2073,7 +2073,7 @@ export default function App() {
 
   // Persist slides in localStorage
   useEffect(() => {
-    localStorage.setItem('school_slides_v10', JSON.stringify(slides));
+    localStorage.setItem('school_slides_v11', JSON.stringify(slides));
   }, [slides]);
 
   // Filter slides to show based on week and role
