@@ -1987,6 +1987,700 @@ const PortfolioWireframeAnimation = () => {
   );
 };
 
+// --- WEEK 3 INTERACTIVE ANIMATION COMPONENTS ---
+
+const colorsData = [
+  { name: 'แดง (Red)', hex: '#ef4444', type: 'primary', angle: 0, desc: 'แม่สีขั้นที่ 1 (Primary Color): สีแห่งความกระตือรือร้น พลังงาน และการดึงดูดสายตาอย่างดีที่สุด' },
+  { name: 'ส้มแดง (Red-Orange)', hex: '#f97316', type: 'tertiary', angle: 30, desc: 'สีขั้นที่ 3 (Tertiary Color): เกิดจากการผสมสีส้มและสีแดง ให้ความร้อนแรงและมีชีวิตชีวา' },
+  { name: 'ส้ม (Orange)', hex: '#ea580c', type: 'secondary', angle: 60, desc: 'สีขั้นที่ 2 (Secondary Color): เกิดจากแม่สี แดง + เหลือง ให้ความรู้สึกอบอุ่น สดใส และตื่นตัว' },
+  { name: 'ส้มเหลือง (Yellow-Orange)', hex: '#eab308', type: 'tertiary', angle: 90, desc: 'สีขั้นที่ 3 (Tertiary Color): เกิดจากการผสมสีส้มและสีเหลือง สื่อถึงความสุข สว่างไสว' },
+  { name: 'เหลือง (Yellow)', hex: '#facc15', type: 'primary', angle: 120, desc: 'แม่สีขั้นที่ 1 (Primary Color): สีแห่งความคิดสร้างสรรค์ ความสดใส และการปลุกเร้าสติปัญญา' },
+  { name: 'เขียวเหลือง (Yellow-Green)', hex: '#84cc16', type: 'tertiary', angle: 150, desc: 'สีขั้นที่ 3 (Tertiary Color): เกิดจากการผสมสีเขียวและสีเหลือง สื่อถึงการเริ่มต้นและความเยาว์วัย' },
+  { name: 'เขียว (Green)', hex: '#22c55e', type: 'secondary', angle: 180, desc: 'สีขั้นที่ 2 (Secondary Color): เกิดจากแม่สี เหลือง + น้ำเงิน สื่อถึงธรรมชาติ ความสมดุล และสุขภาพที่ดี' },
+  { name: 'เขียวน้ำเงิน (Blue-Green)', hex: '#0d9488', type: 'tertiary', angle: 210, desc: 'สีขั้นที่ 3 (Tertiary Color): เกิดจากการผสมสีเขียวและสีน้ำเงิน ให้ความสงบ ลุ่มลึก เหมือนน้ำทะเล' },
+  { name: 'น้ำเงิน (Blue)', hex: '#2563eb', type: 'primary', angle: 240, desc: 'แม่สีขั้นที่ 1 (Primary Color): สีแห่งความสุขุม ความน่าเชื่อถือ ความปลอดภัย และความเป็นมืออาชีพ' },
+  { name: 'ม่วงน้ำเงิน (Blue-Violet)', hex: '#4f46e5', type: 'tertiary', angle: 270, desc: 'สีขั้นที่ 3 (Tertiary Color): เกิดจากการผสมสีม่วงและสีน้ำเงิน ให้ความรู้สึกลึกซึ้ง มีเสน่ห์แบบโมเดิร์น' },
+  { name: 'ม่วง (Violet)', hex: '#7c3aed', type: 'secondary', angle: 300, desc: 'สีขั้นที่ 2 (Secondary Color): เกิดจากแม่สี น้ำเงิน + แดง ให้ความรู้สึกลึกลับ หรูหรา สง่างาม' },
+  { name: 'ม่วงแดง (Red-Violet)', hex: '#db2777', type: 'tertiary', angle: 330, desc: 'สีขั้นที่ 3 (Tertiary Color): เกิดจากการผสมสีม่วงและสีแดง ให้ความรู้สึกโรแมนติก มีพลัง และความคิดสร้างสรรค์' }
+];
+
+const getDonutWedgePath = (cx, cy, innerR, outerR, startAngle, endAngle) => {
+  const rad = Math.PI / 180;
+  const offset = -105;
+  const sAngle = startAngle + offset;
+  const eAngle = endAngle + offset;
+
+  const x1_outer = cx + outerR * Math.cos(sAngle * rad);
+  const y1_outer = cy + outerR * Math.sin(sAngle * rad);
+  const x2_outer = cx + outerR * Math.cos(eAngle * rad);
+  const y2_outer = cy + outerR * Math.sin(eAngle * rad);
+
+  const x1_inner = cx + innerR * Math.cos(sAngle * rad);
+  const y1_inner = cy + innerR * Math.sin(sAngle * rad);
+  const x2_inner = cx + innerR * Math.cos(eAngle * rad);
+  const y2_inner = cy + innerR * Math.sin(eAngle * rad);
+
+  const largeArcFlag = eAngle - sAngle <= 180 ? 0 : 1;
+
+  return `M ${x1_inner} ${y1_inner} 
+          L ${x1_outer} ${y1_outer} 
+          A ${outerR} ${outerR} 0 ${largeArcFlag} 1 ${x2_outer} ${y2_outer} 
+          L ${x2_inner} ${y2_inner} 
+          A ${innerR} ${innerR} 0 ${largeArcFlag} 0 ${x1_inner} ${y1_inner} Z`;
+};
+
+// 1. Color Wheel Demo Component
+const ColorWheelDemo = () => {
+  const [filterType, setFilterType] = useState('all');
+  const [selectedColor, setSelectedColor] = useState(colorsData[0]);
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">วงจรสีมีชีวิต (Interactive Color Wheel)</span>
+      
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '14px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {['all', 'primary', 'secondary', 'tertiary'].map(type => (
+          <button
+            key={type}
+            onClick={() => setFilterType(type)}
+            className={`btn ${filterType === type ? 'btn-primary' : 'btn-outline'}`}
+            style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+          >
+            {type === 'all' && 'ทั้งหมด (All)'}
+            {type === 'primary' && 'แม่สีหลัก (Primary)'}
+            {type === 'secondary' && 'สีขั้นที่ 2 (Secondary)'}
+            {type === 'tertiary' && 'สีขั้นที่ 3 (Tertiary)'}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
+        <div style={{ position: 'relative', width: '180px', height: '180px' }}>
+          <svg width="180" height="180" viewBox="0 0 200 200" style={{ overflow: 'visible' }}>
+            <circle cx="100" cy="100" r="95" fill="none" stroke="#e2e8f0" strokeWidth="1" />
+            
+            {colorsData.map((color, idx) => {
+              const startAngle = idx * 30;
+              const endAngle = (idx + 1) * 30;
+              const isMatch = filterType === 'all' || color.type === filterType;
+              const isSelected = selectedColor.name === color.name;
+              const path = getDonutWedgePath(100, 100, 50, 90, startAngle, endAngle);
+              
+              return (
+                <path
+                  key={color.name}
+                  d={path}
+                  fill={color.hex}
+                  stroke="white"
+                  strokeWidth={isSelected ? '3' : '1'}
+                  style={{
+                    opacity: isMatch ? 1 : 0.15,
+                    cursor: 'pointer',
+                    transform: isSelected ? 'scale(1.04)' : 'scale(1)',
+                    transformOrigin: '100px 100px',
+                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    filter: isSelected ? 'drop-shadow(0 4px 10px rgba(0,0,0,0.15))' : 'none'
+                  }}
+                  onClick={() => setSelectedColor(color)}
+                />
+              );
+            })}
+            
+            <circle cx="100" cy="100" r="46" fill="white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.05))' }} />
+            <text x="100" y="102" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#64748b" fontFamily="Kanit">
+              {filterType.toUpperCase()}
+            </text>
+          </svg>
+        </div>
+
+        <div style={{
+          width: '220px',
+          background: 'white',
+          borderRadius: '20px',
+          padding: '14px',
+          border: '1px solid rgba(225,29,72,0.12)',
+          boxShadow: '0 8px 25px rgba(0,0,0,0.04)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          animation: 'fadeIn 0.4s'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: selectedColor.hex, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}></div>
+            <div>
+              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit' }}>{selectedColor.name}</span>
+              <span style={{ fontSize: '9px', color: '#94a3b8', display: 'block', textTransform: 'uppercase', fontWeight: '600' }}>{selectedColor.type} color</span>
+            </div>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid #f1f5f9', margin: 0 }} />
+          <p style={{ fontSize: '11px', color: '#475569', lineHeight: '1.4', margin: 0 }}>{selectedColor.desc}</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', background: '#f8fafc', padding: '6px 8px', borderRadius: '6px', color: '#64748b', fontFamily: 'Inter' }}>
+            <span>HEX: {selectedColor.hex}</span>
+            <span>องศา: {selectedColor.angle}°</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 2. Color Tones Demo Component
+const ColorTonesDemo = () => {
+  const [tone, setTone] = useState('warm');
+
+  const isWarmColor = (idx) => [0, 1, 2, 3, 4, 10, 11].includes(idx);
+  const isCoolColor = (idx) => [4, 5, 6, 7, 8, 9, 10].includes(idx);
+
+  const isMatch = (idx) => {
+    if (tone === 'warm') return isWarmColor(idx);
+    return isCoolColor(idx);
+  };
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">วรรณะของสี (Warm vs Cool Tones)</span>
+      
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', justifyContent: 'center' }}>
+        <button
+          onClick={() => setTone('warm')}
+          className={`btn ${tone === 'warm' ? 'btn-danger' : 'btn-outline'}`}
+          style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px', background: tone === 'warm' ? '#ef4444' : 'transparent', color: tone === 'warm' ? 'white' : '#ef4444', borderColor: '#ef4444' }}
+        >
+          🔥 สีวรรณะร้อน (Warm)
+        </button>
+        <button
+          onClick={() => setTone('cool')}
+          className={`btn ${tone === 'cool' ? 'btn-primary' : 'btn-outline'}`}
+          style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px', background: tone === 'cool' ? '#3b82f6' : 'transparent', color: tone === 'cool' ? 'white' : '#3b82f6', borderColor: '#3b82f6' }}
+        >
+          ❄️ สีวรรณะเย็น (Cool)
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
+        <div style={{ position: 'relative', width: '150px', height: '150px' }}>
+          <svg width="150" height="150" viewBox="0 0 200 200">
+            {colorsData.map((color, idx) => {
+              const startAngle = idx * 30;
+              const endAngle = (idx + 1) * 30;
+              const active = isMatch(idx);
+              const path = getDonutWedgePath(100, 100, 50, 90, startAngle, endAngle);
+              return (
+                <path
+                  key={color.name}
+                  d={path}
+                  fill={color.hex}
+                  stroke="white"
+                  strokeWidth="1"
+                  style={{
+                    opacity: active ? 1 : 0.08,
+                    transition: 'all 0.4s ease'
+                  }}
+                />
+              );
+            })}
+            <circle cx="100" cy="100" r="46" fill="white" />
+            <text x="100" y="103" textAnchor="middle" fontSize="18" fill={tone === 'warm' ? '#ef4444' : '#3b82f6'}>
+              {tone === 'warm' ? '🔥' : '❄️'}
+            </text>
+          </svg>
+        </div>
+
+        <div style={{
+          width: '220px',
+          background: 'white',
+          borderRadius: '24px',
+          padding: '14px',
+          border: '1.5px solid',
+          borderColor: tone === 'warm' ? '#fee2e2' : '#dbeafe',
+          boxShadow: '0 8px 25px rgba(0,0,0,0.03)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
+        }}>
+          <h4 style={{ fontSize: '13px', fontWeight: 'bold', color: tone === 'warm' ? '#ef4444' : '#2563eb', margin: 0, fontFamily: 'Kanit' }}>
+            {tone === 'warm' ? 'อารมณ์สีวรรณะร้อน (Warm)' : 'อารมณ์สีวรรณะเย็น (Cool)'}
+          </h4>
+          <ul style={{ paddingLeft: '16px', margin: 0, fontSize: '11px', color: '#475569', lineHeight: '1.4' }}>
+            {tone === 'warm' ? (
+              <>
+                <li>อบอุ่น ร้อนแรง สนุกสนาน ตื่นเต้น</li>
+                <li>ดึงดูดสายตาได้อย่างรวดเร็วในภาพแรก</li>
+                <li>ใช้ใน: ปุ่มสำคัญ (CTA), แอปอาหาร, เกม</li>
+              </>
+            ) : (
+              <>
+                <li>สดชื่น สงบ ผ่อนคลาย สบายตา ปลอดภัย</li>
+                <li>ลดความเหนื่อยล้าของตาในการมองจอนานๆ</li>
+                <li>ใช้ใน: แอปการเงิน, แอปสุขภาพ, การอ่าน</li>
+              </>
+            )}
+          </ul>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '16px', width: '100%', borderTop: '1px dashed #e2e8f0', paddingTop: '12px' }}>
+        <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px', textAlign: 'center', fontFamily: 'Kanit' }}>
+          ทดลอง: เปรียบเทียบสภาพแวดล้อมที่ส่งผลต่อ สีเหลือง และ สีม่วง
+        </span>
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', background: '#f8fafc', padding: '8px', borderRadius: '12px' }}>
+            <div style={{ width: '40px', height: '40px', background: '#ef4444', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#facc15' }}></div>
+            </div>
+            <div style={{ width: '40px', height: '40px', background: '#2563eb', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#facc15' }}></div>
+            </div>
+            <span style={{ fontSize: '9px', color: '#475569', maxWidth: '100px', lineHeight: '1.2', fontFamily: 'Kanit' }}>
+              <b>สีเหลือง</b>: คู่สีแดง (ดูร้อน) คู่สีน้ำเงิน (ดูเย็น)
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', background: '#f8fafc', padding: '8px', borderRadius: '12px' }}>
+            <div style={{ width: '40px', height: '40px', background: '#f97316', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#7c3aed' }}></div>
+            </div>
+            <div style={{ width: '40px', height: '40px', background: '#22c55e', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#7c3aed' }}></div>
+            </div>
+            <span style={{ fontSize: '9px', color: '#475569', maxWidth: '100px', lineHeight: '1.2', fontFamily: 'Kanit' }}>
+              <b>สีม่วง</b>: คู่สีส้ม (ดูอุ่น) คู่สีเขียว (ดูเย็นสบาย)
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// HSV to HSL conversion helper
+const hsvToHsl = (h, s, v) => {
+  const l = (2 - s / 100) * v / 2;
+  let newS = s;
+  if (l !== 0) {
+    if (l === 100) {
+      newS = 0;
+    } else if (l < 50) {
+      newS = (s * v) / (l * 2);
+    } else {
+      newS = (s * v) / (200 - l * 2);
+    }
+  }
+  return { h, s: Math.round(newS), l: Math.round(l) };
+};
+
+// HSL to RGB conversion helper
+const hslToRgb = (h, s, l) => {
+  s /= 100;
+  l /= 100;
+  const k = n => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return {
+    r: Math.round(f(0) * 255),
+    g: Math.round(f(8) * 255),
+    b: Math.round(f(4) * 255)
+  };
+};
+
+const getLuminance = (r, g, b) => {
+  const a = [r, g, b].map(v => {
+    v /= 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+};
+
+const getContrastRatio = (lum1, lum2) => {
+  const l1 = Math.max(lum1, lum2);
+  const l2 = Math.min(lum1, lum2);
+  return (l1 + 0.05) / (l2 + 0.05);
+};
+
+// 3. HSV Demo Component
+const HSVDemo = () => {
+  const [h, setH] = useState(210);
+  const [s, setS] = useState(80);
+  const [v, setV] = useState(85);
+
+  const hsl = hsvToHsl(h, s, v);
+  const rgb = hslToRgb(hsl.h, hsl.s, hsl.l);
+  
+  const bgLuminance = getLuminance(rgb.r, rgb.g, rgb.b);
+  const whiteLuminance = 1.0;
+  const blackLuminance = 0.03928;
+  
+  const whiteContrast = getContrastRatio(whiteLuminance, bgLuminance);
+  const blackContrast = getContrastRatio(blackLuminance, bgLuminance);
+
+  const hexString = `#${((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1)}`;
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">แล็บทดสอบค่าสี HSV (Digital HSV Color Lab)</span>
+
+      <div style={{ display: 'flex', gap: '20px', width: '100%', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ flex: 1, minWidth: '200px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 'bold', color: '#1e293b', marginBottom: '2px', fontFamily: 'Kanit' }}>
+              <span>1. Hue (สีสัน): {h}°</span>
+              <span style={{ color: '#64748b' }}>ชนิดของสี</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" 
+              max="360" 
+              value={h} 
+              onChange={(e) => setH(Number(e.target.value))} 
+              style={{
+                width: '100%',
+                height: '8px',
+                borderRadius: '4px',
+                accentColor: hexString,
+                background: 'linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)'
+              }}
+            />
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 'bold', color: '#1e293b', marginBottom: '2px', fontFamily: 'Kanit' }}>
+              <span>2. Saturation (ความสด): {s}%</span>
+              <span style={{ color: '#64748b' }}>จืด ➔ สด</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value={s} 
+              onChange={(e) => setS(Number(e.target.value))} 
+              style={{
+                width: '100%',
+                height: '8px',
+                borderRadius: '4px',
+                accentColor: hexString,
+                background: `linear-gradient(to right, #808080, hsl(${h}, 100%, 50%))`
+              }}
+            />
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 'bold', color: '#1e293b', marginBottom: '2px', fontFamily: 'Kanit' }}>
+              <span>3. Value / Brightness (ความสว่าง): {v}%</span>
+              <span style={{ color: '#64748b' }}>มืด ➔ สว่าง</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value={v} 
+              onChange={(e) => setV(Number(e.target.value))} 
+              style={{
+                width: '100%',
+                height: '8px',
+                borderRadius: '4px',
+                accentColor: hexString,
+                background: `linear-gradient(to right, #000, hsl(${h}, ${s}%, 50%))`
+              }}
+            />
+          </div>
+
+          <div style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '10px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+            <span style={{ fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit' }}>📊 ผลตรวจสอบความเปรียบต่าง (Accessibility)</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>ข้อความสีขาว: {whiteContrast.toFixed(1)}:1</span>
+              <span style={{ fontWeight: 'bold', color: whiteContrast >= 4.5 ? '#10b981' : '#ef4444' }}>
+                {whiteContrast >= 4.5 ? '✅ ผ่าน' : '❌ ไม่ผ่าน'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>ข้อความสีดำ: {blackContrast.toFixed(1)}:1</span>
+              <span style={{ fontWeight: 'bold', color: blackContrast >= 4.5 ? '#10b981' : '#ef4444' }}>
+                {blackContrast >= 4.5 ? '✅ ผ่าน' : '❌ ไม่ผ่าน'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          width: '180px',
+          height: '210px',
+          background: 'white',
+          borderRadius: '24px',
+          border: '1.5px solid rgba(0,0,0,0.08)',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.06)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
+        }}>
+          <div style={{
+            background: hexString,
+            padding: '8px 12px',
+            color: whiteContrast >= blackContrast ? '#ffffff' : '#1e293b',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'background-color 0.2s, color 0.2s'
+          }}>
+            <span style={{ fontSize: '12px' }}>📱</span>
+            <span style={{ fontSize: '9px', fontWeight: 'bold', fontFamily: 'Kanit' }}>พรีวิวแอปพลิเคชัน</span>
+          </div>
+
+          <div style={{ flexGrow: 1, padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ height: '8px', background: '#e2e8f0', borderRadius: '4px', width: '80%' }}></div>
+              <div style={{ height: '6px', background: '#f1f5f9', borderRadius: '4px', width: '50%', marginTop: '4px' }}></div>
+            </div>
+            
+            <div style={{ background: '#f8fafc', padding: '6px', borderRadius: '8px', border: '1px dashed #cbd5e1', textAlign: 'center' }}>
+              <span style={{ fontSize: '9px', color: '#64748b', display: 'block' }}>ค่าสีดิจิทัลที่ได้</span>
+              <span style={{ fontSize: '11px', fontWeight: 'bold', color: hexString, fontFamily: 'Inter' }}>{hexString.toUpperCase()}</span>
+            </div>
+
+            <button style={{
+              width: '100%',
+              background: hexString,
+              color: whiteContrast >= blackContrast ? '#ffffff' : '#1e293b',
+              border: 'none',
+              padding: '6px',
+              borderRadius: '6px',
+              fontSize: '10px',
+              fontWeight: 'bold',
+              fontFamily: 'Kanit',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s, color 0.2s'
+            }}>
+              ส่งการบ้านใบงาน
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 4. Color Harmony Demo Component
+const ColorHarmonyDemo = () => {
+  const [harmony, setHarmony] = useState('monochromatic');
+
+  const harmonies = [
+    { id: 'achromatic', name: 'Achromatic (ไร้สี)', desc: 'โทน ขาว-เทา-ดำ เท่ มินิมอล' },
+    { id: 'monochromatic', name: 'Monochromatic (เอกรงค์)', desc: 'สีเดียวไล่เฉด สวยมีเอกภาพสูงสุด' },
+    { id: 'analogous', name: 'Analogous (ข้างเคียง)', desc: 'จับคู่ 3 สีข้างเคียง กลมกลืนธรรมชาติ' },
+    { id: 'complementary', name: 'Complementary (คู่สีตรงข้าม)', desc: 'คู่ตรงข้าม 180° ปุ่มเด้งสะดุดตา' },
+    { id: 'split-complementary', name: 'Split-Complementary (เยื้องตรงข้าม)', desc: '3 สีแนวสามเหลี่ยมหน้าจั่ว คอนทราสต์งาม' },
+    { id: 'triad', name: 'Triad (สามมุมเท่า)', desc: '3 สีมุมห่างเท่ากัน สดใสมีพลัง' },
+    { id: 'tetradic', name: 'Tetradic (สี่มุม)', desc: '4 สีคู่ตรงข้าม 2 คู่ มิติหลากหลาย' }
+  ];
+
+  const getLineCoordinates = () => {
+    const getAngleCoords = (angle) => {
+      const offset = -105;
+      const rad = ((angle + offset) * Math.PI) / 180;
+      return { x: 100 + 70 * Math.cos(rad), y: 100 + 70 * Math.sin(rad) };
+    };
+
+    switch (harmony) {
+      case 'complementary': {
+        const c1 = getAngleCoords(0);
+        const c2 = getAngleCoords(180);
+        return <line x1={c1.x} y1={c1.y} x2={c2.x} y2={c2.y} stroke="black" strokeWidth="2" strokeDasharray="3 3" />;
+      }
+      case 'triad': {
+        const c1 = getAngleCoords(0);
+        const c2 = getAngleCoords(120);
+        const c3 = getAngleCoords(240);
+        return <polygon points={`${c1.x},${c1.y} ${c2.x},${c2.y} ${c3.x},${c3.y}`} fill="none" stroke="black" strokeWidth="2" strokeDasharray="3 3" />;
+      }
+      case 'split-complementary': {
+        const c1 = getAngleCoords(0);
+        const c2 = getAngleCoords(150);
+        const c3 = getAngleCoords(210);
+        return <polygon points={`${c1.x},${c1.y} ${c2.x},${c2.y} ${c3.x},${c3.y}`} fill="none" stroke="black" strokeWidth="2" strokeDasharray="3 3" />;
+      }
+      case 'tetradic': {
+        const c1 = getAngleCoords(0);
+        const c2 = getAngleCoords(60);
+        const c3 = getAngleCoords(180);
+        const c4 = getAngleCoords(240);
+        return <polygon points={`${c1.x},${c1.y} ${c2.x},${c2.y} ${c3.x},${c3.y} ${c4.x},${c4.y}`} fill="none" stroke="black" strokeWidth="2" strokeDasharray="3 3" />;
+      }
+      case 'analogous': {
+        const c1 = getAngleCoords(180);
+        const c2 = getAngleCoords(210);
+        const c3 = getAngleCoords(240);
+        return <path d={`M ${c1.x} ${c1.y} A 70 70 0 0 1 ${c3.x} ${c3.y}`} fill="none" stroke="black" strokeWidth="2" strokeDasharray="3 3" />;
+      }
+      default:
+        return null;
+    }
+  };
+
+  const isHighlightedWedge = (idx) => {
+    switch (harmony) {
+      case 'achromatic': return false;
+      case 'monochromatic': return idx === 8;
+      case 'analogous': return [6, 7, 8].includes(idx);
+      case 'complementary': return [0, 6].includes(idx);
+      case 'split-complementary': return [0, 5, 7].includes(idx);
+      case 'triad': return [0, 4, 8].includes(idx);
+      case 'tetradic': return [0, 2, 6, 8].includes(idx);
+      default: return true;
+    }
+  };
+
+  const theme = (() => {
+    switch (harmony) {
+      case 'achromatic':
+        return { nav: '#1e293b', btn: '#64748b', badgeBg: '#e2e8f0', badgeText: '#1e293b', bg: '#ffffff', listIcon: '#94a3b8' };
+      case 'monochromatic':
+        return { nav: '#2563eb', btn: '#1d4ed8', badgeBg: '#dbeafe', badgeText: '#1e40af', bg: '#f8fafc', listIcon: '#60a5fa' };
+      case 'analogous':
+        return { nav: '#0d9488', btn: '#0f766e', badgeBg: '#ccfbf1', badgeText: '#115e59', bg: '#f0fdfa', listIcon: '#2dd4bf' };
+      case 'complementary':
+        return { nav: '#1e3a8a', btn: '#ea580c', badgeBg: '#ffedd5', badgeText: '#c2410c', bg: '#f8fafc', listIcon: '#3b82f6' };
+      case 'split-complementary':
+        return { nav: '#6d28d9', btn: '#eab308', badgeBg: '#fef9c3', badgeText: '#854d0e', bg: '#f5f3ff', listIcon: '#a78bfa' };
+      case 'triad':
+        return { nav: '#1d4ed8', btn: '#ef4444', badgeBg: '#fef9c3', badgeText: '#854d0e', bg: '#f8fafc', listIcon: '#fbbf24' };
+      case 'tetradic':
+        return { nav: '#db2777', btn: '#f97316', badgeBg: '#dcfce7', badgeText: '#15803d', bg: '#fff5f7', listIcon: '#22c55e' };
+      default:
+        return { nav: '#2563eb', btn: '#2563eb', badgeBg: '#dbeafe', badgeText: '#1e40af', bg: '#f8fafc', listIcon: '#60a5fa' };
+    }
+  })();
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">สูตรประสานคู่สี (Color Harmony Simulator)</span>
+
+      <div style={{ display: 'flex', gap: '14px', width: '100%', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ flex: 1, minWidth: '180px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'Kanit' }}>เลือกสูตรคู่สี:</span>
+          {harmonies.map(item => (
+            <button
+              key={item.id}
+              onClick={() => setHarmony(item.id)}
+              style={{
+                background: harmony === item.id ? 'var(--primary)' : 'white',
+                color: harmony === item.id ? 'white' : '#1e293b',
+                border: '1px solid',
+                borderColor: harmony === item.id ? 'var(--primary)' : '#e2e8f0',
+                borderRadius: '8px',
+                padding: '6px 10px',
+                textAlign: 'left',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <span style={{ fontSize: '11px', fontWeight: 'bold', fontFamily: 'Kanit' }}>{item.name}</span>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ position: 'relative', width: '120px', height: '120px', alignSelf: 'center' }}>
+          <svg width="120" height="120" viewBox="0 0 200 200">
+            {colorsData.map((color, idx) => {
+              const startAngle = idx * 30;
+              const endAngle = (idx + 1) * 30;
+              const fillHex = harmony === 'achromatic' 
+                ? `hsl(0, 0%, ${Math.round(100 - (idx * 9))}%` 
+                : color.hex;
+              const active = harmony === 'achromatic' ? true : isHighlightedWedge(idx);
+              const path = getDonutWedgePath(100, 100, 60, 95, startAngle, endAngle);
+              return (
+                <path
+                  key={color.name}
+                  d={path}
+                  fill={fillHex}
+                  stroke="white"
+                  strokeWidth="1"
+                  style={{
+                    opacity: active ? 1 : 0.08,
+                    transition: 'all 0.4s ease'
+                  }}
+                />
+              );
+            })}
+            <circle cx="100" cy="100" r="58" fill="white" />
+            {getLineCoordinates()}
+          </svg>
+        </div>
+
+        <div style={{
+          width: '150px',
+          height: '210px',
+          background: theme.bg,
+          borderRadius: '24px',
+          border: '1.5px solid rgba(0,0,0,0.08)',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.05)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          transition: 'background-color 0.5s'
+        }}>
+          <div style={{
+            background: theme.nav,
+            padding: '6px 10px',
+            color: 'white',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            transition: 'background-color 0.5s'
+          }}>
+            <span style={{ fontSize: '9px', fontWeight: 'bold', fontFamily: 'Kanit' }}>Theme App</span>
+          </div>
+
+          <div style={{ flexGrow: 1, padding: '10px', display: 'flex', flexDirection: 'column', gap: '6px', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{
+                background: theme.badgeBg,
+                color: theme.badgeText,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                fontSize: '8px',
+                fontWeight: 'bold',
+                alignSelf: 'flex-start',
+                fontFamily: 'Kanit',
+                transition: 'all 0.5s'
+              }}>
+                สถานะธีม
+              </div>
+              <div style={{ height: '6px', background: '#cbd5e1', borderRadius: '3px', width: '85%' }}></div>
+              <div style={{ height: '4px', background: '#e2e8f0', borderRadius: '2px', width: '50%' }}></div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', borderTop: '1px dashed #cbd5e1', paddingTop: '6px' }}>
+              <div style={{ width: '16px', height: '16px', borderRadius: '4px', background: theme.listIcon, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', color: 'white', transition: 'background-color 0.5s' }}>
+                ⭐
+              </div>
+              <div style={{ height: '4px', background: '#cbd5e1', borderRadius: '2px', flexGrow: 1 }}></div>
+            </div>
+
+            <button style={{
+              width: '100%',
+              background: theme.btn,
+              color: 'white',
+              border: 'none',
+              padding: '6px',
+              borderRadius: '6px',
+              fontSize: '9px',
+              fontWeight: 'bold',
+              fontFamily: 'Kanit',
+              cursor: 'pointer',
+              transition: 'background-color 0.5s'
+            }}>
+              สมัครใช้คู่สีนี้
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Main Router dispatcher for slide graphic components
 const GraphicDispatcher = ({ slide }) => {
   const type = slide ? slide.animationType : null;
@@ -2001,6 +2695,10 @@ const GraphicDispatcher = ({ slide }) => {
     case 'cognitive-load': return <CognitiveLoadAnimation slideId={slideId} />;
     case 'visual-hierarchy': return <VisualHierarchyAnimation slideId={slideId} />;
     case 'design-systems': return <DesignSystemsAnimation slideId={slideId} />;
+    case 'color-wheel-demo': return <ColorWheelDemo />;
+    case 'color-tones-demo': return <ColorTonesDemo />;
+    case 'hsv-demo': return <HSVDemo />;
+    case 'color-harmony-demo': return <ColorHarmonyDemo />;
     case 'portfolio-wireframe':
       return (
         <div style={{ 
@@ -2267,6 +2965,16 @@ export default function App() {
                 <div className="week-num">Week 2 (สัปดาห์ที่ 2)</div>
                 <h3 className="week-title">ศาสตร์และศิลป์แห่งการออกแบบ UX/UI</h3>
                 <p className="week-desc">เจาะลึกทฤษฎีขั้นสูง จิตวิทยากลุ่มสี ระบบโครงสร้างฟอนต์ และกระบวนการคิด Design Thinking รวมถึงกฎ 10 ข้อในการลดภาระสมองของผู้ใช้งาน</p>
+                <div className="week-action">
+                  <span>เริ่มศึกษาเนื้อหาบทเรียน</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+              </div>
+
+              <div className="week-card" onClick={() => { setActiveWeek(3); setCurrentSlideIdx(0); }}>
+                <div className="week-num">Week 3 (สัปดาห์ที่ 3)</div>
+                <h3 className="week-title">การใช้สีในการออกแบบอินเตอร์เฟส</h3>
+                <p className="week-desc">เรียนรู้ความสำคัญของสี จิตวิทยาและทฤษฎีวรรณะของสี ระบบสีดิจิทัล HSV ตลอดจนสูตรการประสานคู่สี (Color Harmony) ทั้ง 7 แบบในงานดีไซน์</p>
                 <div className="week-action">
                   <span>เริ่มศึกษาเนื้อหาบทเรียน</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
