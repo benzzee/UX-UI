@@ -1090,23 +1090,6 @@ export const initialSlides = [
     ],
     animationType: "gpu-performance-sim",
     isHidden: false
-  },
-  {
-    id: "w4-s13",
-    week: 4,
-    slideNum: 13,
-    title: "กิจกรรมปฏิบัติ: ออกแบบระบบ Motion Tokens",
-    subtitle: "โปรเจกต์ท้ายบท: สร้างมาตรฐานและค่านิยมอนิเมชันให้แบรนด์",
-    content: [
-      "เพื่อความสม่ำเสมอของผลงาน (Consistency) ทีมออกแบบจำเป็นต้องกำหนดข้อตกลงในการเคลื่อนไหวร่วมกัน (Motion Design System):",
-      "ให้นักเรียนทดลองออกแบบ 'Motion Tokens' ของแอปพลิเคชันจำลองของตนเอง โดยเลือกจับคู่คุณสมบัติต่อไปนี้:",
-      "1. กำหนดค่า Duration (เวลา): instant (80ms) | fast (150ms) | base (250ms) | slow (400ms)",
-      "2. กำหนดคีย์ Easing (เส้นโค้งความเร่ง): ease-enter | ease-exit | ease-standard | ease-spring",
-      "จากนั้น นำ Tokens เหล่านั้นไปใช้งานทดสอบการตอบสนองเชิงฟิสิกส์ของกล่องข้อมูล (Card) และปุ่มกดให้มีความสวยงามลื่นไหล",
-      "พร้อมทั้งผ่านการทดสอบ Accessibility Checklist และลด Perceived Wait Time ทั้งหมดอย่างสัมฤทธิ์ผล"
-    ],
-    animationType: "motion-tokens-playground",
-    isHidden: false
   }
 ];
 
