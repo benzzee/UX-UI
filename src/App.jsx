@@ -4419,17 +4419,43 @@ export default function App() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [passcode, setPasscode] = useState('');
   const [loginError, setLoginError] = useState('');
-
   // Slide Edit Modal
   const [editingSlide, setEditingSlide] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editSubtitle, setEditSubtitle] = useState('');
   const [editContent, setEditContent] = useState('');
 
+  // Font Zoom and Fullscreen States
+  const [zoomLevel, setZoomLevel] = useState(100); // 100%, 120%, 140%
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
   // Persist slides in localStorage
   useEffect(() => {
     localStorage.setItem('school_slides_v12', JSON.stringify(slides));
   }, [slides]);
+
+  // Handle HTML5 fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    const element = document.getElementById('presentation-area');
+    if (!element) return;
+    if (!document.fullscreenElement) {
+      element.requestFullscreen().catch(err => {
+        console.error("Error entering fullscreen mode:", err);
+      });
+    } else {
+      document.exitFullscreen().catch(err => {
+        console.error("Error exiting fullscreen mode:", err);
+      });
+    }
+  };
 
   // Filter slides to show based on week and role
   const getVisibleSlides = () => {
@@ -4534,8 +4560,8 @@ export default function App() {
     setSlides(updated);
     setCurrentSlideIdx(0);
     alert(allHidden 
-      ? `เปิดแสดงสไลด์ทั้งหมดในสัปดาห์ที่ ${weekNum} เรียบร้อยแล้ว!` 
-      : `ซ่อนสไลด์ทั้งหมดในสัปดาห์ที่ ${weekNum} จากมุมมองนักเรียนเรียบร้อยแล้ว!`
+      ? `เปิดแสดงสไลด์ทั้งหมดในหน่วยที่ ${weekNum} เรียบร้อยแล้ว!` 
+      : `ซ่อนสไลด์ทั้งหมดในหน่วยที่ ${weekNum} จากมุมมองนักเรียนเรียบร้อยแล้ว!`
     );
   };
 
@@ -4609,7 +4635,7 @@ export default function App() {
             {/* Weeks content selection grid */}
             <div className="week-selector">
               <div className="week-card" onClick={() => { setActiveWeek(1); setCurrentSlideIdx(0); }}>
-                <div className="week-num">Week 1 (สัปดาห์ที่ 1)</div>
+                <div className="week-num">หน่วยที่ 1</div>
                 <h3 className="week-title">ความรู้เบื้องต้นและการออกแบบ UX</h3>
                 <p className="week-desc">ทำความเข้าใจแนวคิดพื้นฐานเกี่ยวกับความหมายของระบบพฤติกรรมผู้ใช้ การแก้ปัญหารอบด้าน และตารางความแตกต่างที่ชัดเจนระหว่างสายงาน UX และ UI</p>
                 <div className="week-action">
@@ -4619,7 +4645,7 @@ export default function App() {
               </div>
 
               <div className="week-card" onClick={() => { setActiveWeek(2); setCurrentSlideIdx(0); }}>
-                <div className="week-num">Week 2 (สัปดาห์ที่ 2)</div>
+                <div className="week-num">หน่วยที่ 2</div>
                 <h3 className="week-title">ศาสตร์และศิลป์แห่งการออกแบบ UX/UI</h3>
                 <p className="week-desc">เจาะลึกทฤษฎีขั้นสูง จิตวิทยากลุ่มสี ระบบโครงสร้างฟอนต์ และกระบวนการคิด Design Thinking รวมถึงกฎ 10 ข้อในการลดภาระสมองของผู้ใช้งาน</p>
                 <div className="week-action">
@@ -4629,7 +4655,7 @@ export default function App() {
               </div>
 
               <div className="week-card" onClick={() => { setActiveWeek(3); setCurrentSlideIdx(0); }}>
-                <div className="week-num">Week 3 (สัปดาห์ที่ 3)</div>
+                <div className="week-num">หน่วยที่ 3</div>
                 <h3 className="week-title">การใช้สีในการออกแบบอินเตอร์เฟส</h3>
                 <p className="week-desc">เรียนรู้ความสำคัญของสี จิตวิทยาและทฤษฎีวรรณะของสี ระบบสีดิจิทัล HSV ตลอดจนสูตรการประสานคู่สี (Color Harmony) ทั้ง 7 แบบในงานดีไซน์</p>
                 <div className="week-action">
@@ -4639,7 +4665,7 @@ export default function App() {
               </div>
 
               <div className="week-card" onClick={() => { setActiveWeek(4); setCurrentSlideIdx(0); }}>
-                <div className="week-num">Week 4 (สัปดาห์ที่ 4)</div>
+                <div className="week-num">หน่วยที่ 4</div>
                 <h3 className="week-title">แอนิเมชันสำหรับการออกแบบ UX/UI</h3>
                 <p className="week-desc">เรียนรู้จิตวิทยาของการเคลื่อนไหว (Psychology of Motion) กฎแอนิเมชันสำหรับดิจิทัล UI หลักการเรื่องความเร็ว (Duration) และเส้นโค้งความเร่ง (Easing Curves)</p>
                 <div className="week-action">
@@ -4652,133 +4678,176 @@ export default function App() {
         ) : (
           /* ================= PRESENTATION SLIDES SCREEN ================= */
           <div className="presentation-container">
-            {/* Header elements inside slide presentation */}
-            <div className="slide-header">
-              <button className="back-button" onClick={() => { setActiveWeek(null); setCurrentSlideIdx(0); }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: '4px' }}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                กลับไปที่หน้าแรก
-              </button>
+            <div id="presentation-area" className={`presentation-area-wrapper ${isFullscreen ? 'fullscreen-mode' : ''}`}>
               
-              <div className="slide-meta-info">
-                <span className="week-tag">สัปดาห์ที่ {activeWeek}</span>
-                {visibleSlides.length > 0 && (
-                  <span className="slide-indicator">สไลด์ที่ {currentSlideIdx + 1} / {visibleSlides.length}</span>
-                )}
-                {teacherMode && (
+              {/* Header elements inside slide presentation */}
+              <div className="slide-header">
+                <button className="back-button" onClick={() => { setActiveWeek(null); setCurrentSlideIdx(0); }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: '4px' }}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                  กลับไปที่หน้าแรก
+                </button>
+                
+                {/* Presentation Controls: Font Zoom & Fullscreen */}
+                <div className="presentation-controls">
+                  <div className="font-zoom-controls">
+                    <span className="font-zoom-label" style={{ marginLeft: '8px' }}>ฟอนต์:</span>
+                    <button 
+                      type="button" 
+                      className={`font-zoom-btn ${zoomLevel === 100 ? 'active' : ''}`} 
+                      onClick={() => setZoomLevel(100)}
+                      title="ขนาดปกติ (100%)"
+                    >
+                      A
+                    </button>
+                    <button 
+                      type="button" 
+                      className={`font-zoom-btn ${zoomLevel === 120 ? 'active' : ''}`} 
+                      onClick={() => setZoomLevel(120)}
+                      title="ขนาดกลาง (120%)"
+                    >
+                      A+
+                    </button>
+                    <button 
+                      type="button" 
+                      className={`font-zoom-btn ${zoomLevel === 140 ? 'active' : ''}`} 
+                      onClick={() => setZoomLevel(140)}
+                      title="ขนาดใหญ่ (140%)"
+                    >
+                      A++
+                    </button>
+                  </div>
+
                   <button 
+                    type="button" 
                     className="btn btn-outline" 
-                    onClick={() => toggleWeekVisibility(activeWeek)} 
-                    style={{ padding: '6px 12px', fontSize: '0.8rem', marginLeft: '12px', borderColor: 'var(--primary)', color: 'var(--primary)' }}
+                    onClick={toggleFullscreen}
+                    style={{ padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
                   >
-                    {slides.filter(s => s.week === activeWeek && !s.isHidden).length === 0 
-                      ? '👁️ แสดงทั้งสัปดาห์นี้' 
-                      : '👁️‍🌫️ ซ่อนทั้งสัปดาห์นี้'}
+                    {isFullscreen ? '📴 ออกจากเต็มจอ' : '📺 ฉายสไลด์เต็มจอ'}
                   </button>
-                )}
-              </div>
-            </div>
+                </div>
 
-            {/* Check if all slides in this week are hidden by the teacher */}
-            {visibleSlides.length === 0 ? (
-              <div className="glass-panel" style={{ padding: '80px 40px', textAlignment: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: '48px', marginBottom: '20px' }}>👁️‍🌫️</span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-dark)' }}>เนื้อหาหน่วยการเรียนรู้นี้ยังไม่เปิดเผย</h3>
-                <p style={{ color: 'var(--text-muted)', marginTop: '8px', maxWidth: '400px', textAlign: 'center' }}>ขณะนี้คุณครูผู้สอนได้ทำการซ่อนเนื้อหาในวิชาสัปดาห์นี้ทั้งหมดชั่วคราว</p>
-                {teacherMode && (
-                  <button className="btn btn-primary" onClick={resetToDefaults} style={{ marginTop: '20px' }}>
-                    รีเซ็ตเพื่อแสดงสไลด์
-                  </button>
-                )}
+                <div className="slide-meta-info">
+                  <span className="week-tag">หน่วยที่ {activeWeek}</span>
+                  {visibleSlides.length > 0 && (
+                    <span className="slide-indicator">สไลด์ที่ {currentSlideIdx + 1} / {visibleSlides.length}</span>
+                  )}
+                  {teacherMode && (
+                    <button 
+                      className="btn btn-outline" 
+                      onClick={() => toggleWeekVisibility(activeWeek)} 
+                      style={{ padding: '6px 12px', fontSize: '0.8rem', marginLeft: '12px', borderColor: 'var(--primary)', color: 'var(--primary)' }}
+                    >
+                      {slides.filter(s => s.week === activeWeek && !s.isHidden).length === 0 
+                        ? '👁️ แสดงทั้งหน่วยนี้' 
+                        : '👁️‍🌫️ ซ่อนทั้งหน่วยนี้'}
+                    </button>
+                  )}
+                </div>
               </div>
-            ) : (
-              /* Split Layout for Slide View */
-              <>
-                <div className="slide-grid">
-                  
-                  {/* Left Column: Text Content and Teacher Controls */}
-                  <div className="slide-content-card glass-panel">
-                    <span className="slide-category">{currentSlide.subtitle}</span>
-                    <h2 className="slide-title">
-                      {currentSlide.title}
-                      {currentSlide.isHidden && (
-                        <span style={{ marginLeft: '10px', fontSize: '0.75rem', background: '#ef4444', color: 'white', padding: '3px 8px', borderRadius: '6px', fontWeight: '600', verticalAlign: 'middle' }}>
-                          🚫 ถูกซ่อนอยู่ (เฉพาะคุณครูที่เห็นสไลด์นี้)
-                        </span>
-                      )}
-                    </h2>
+
+              {/* Check if all slides in this week are hidden by the teacher */}
+              {visibleSlides.length === 0 ? (
+                <div className="glass-panel" style={{ padding: '80px 40px', textAlignment: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                  <span style={{ fontSize: '48px', marginBottom: '20px' }}>👁️‍🌫️</span>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-dark)' }}>เนื้อหาหน่วยการเรียนรู้นี้ยังไม่เปิดเผย</h3>
+                  <p style={{ color: 'var(--text-muted)', marginTop: '8px', maxWidth: '400px', textAlign: 'center' }}>ขณะนี้คุณครูผู้สอนได้ทำการซ่อนเนื้อหาในวิชาหน่วยนี้ทั้งหมดชั่วคราว</p>
+                  {teacherMode && (
+                    <button className="btn btn-primary" onClick={resetToDefaults} style={{ marginTop: '20px' }}>
+                      รีเซ็ตเพื่อแสดงสไลด์
+                    </button>
+                  )}
+                </div>
+              ) : (
+                /* Split Layout for Slide View */
+                <>
+                  <div className="slide-grid">
                     
-                    <div className="slide-body-paragraphs">
-                      {currentSlide.content.map((paragraph, index) => {
-                        if (paragraph.startsWith('•')) {
-                          return (
-                            <ul key={index}>
-                              <li>{paragraph.substring(2)}</li>
-                            </ul>
-                          );
-                        }
-                        return <p key={index}>{paragraph}</p>;
-                      })}
-                    </div>
-
-                    {/* Teacher Action Controls (Exposed only to verified teacher) */}
-                    {teacherMode && (
-                      <div className="teacher-actions-bar">
-                        <button className="btn btn-secondary" onClick={() => openEditModal(currentSlide)} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
-                          📝 แก้ไขข้อความสไลด์
-                        </button>
-                        <button 
-                          className={`btn ${currentSlide.isHidden ? 'btn-outline' : 'btn-secondary'}`} 
-                          onClick={() => toggleSlideVisibility(currentSlide.id)}
-                          style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                        >
-                          {currentSlide.isHidden ? '👁️ แสดงสไลด์ให้นักเรียนเห็น' : '👁️‍🌫️ ซ่อนสไลด์นี้จากนักเรียน'}
-                        </button>
+                    {/* Left Column: Text Content and Teacher Controls */}
+                    <div className="slide-content-card glass-panel">
+                      <span className="slide-category" style={{ fontSize: `${0.9 * (zoomLevel / 100)}rem`, transition: 'font-size 0.2s ease' }}>{currentSlide.subtitle}</span>
+                      <h2 className="slide-title" style={{ fontSize: `${2.2 * (zoomLevel / 100)}rem`, transition: 'font-size 0.2s ease', lineHeight: 1.3 }}>
+                        {currentSlide.title}
+                        {currentSlide.isHidden && (
+                          <span style={{ marginLeft: '10px', fontSize: '0.75rem', background: '#ef4444', color: 'white', padding: '3px 8px', borderRadius: '6px', fontWeight: '600', verticalAlign: 'middle' }}>
+                            🚫 ถูกซ่อนอยู่ (เฉพาะคุณครูที่เห็นสไลด์นี้)
+                          </span>
+                        )}
+                      </h2>
+                      
+                      <div className="slide-body-paragraphs" style={{ fontSize: `${1.05 * (zoomLevel / 100)}rem`, transition: 'font-size 0.2s ease' }}>
+                        {currentSlide.content.map((paragraph, index) => {
+                          if (paragraph.startsWith('•')) {
+                            return (
+                              <ul key={index}>
+                                <li>{paragraph.substring(2)}</li>
+                              </ul>
+                            );
+                          }
+                          return <p key={index}>{paragraph}</p>;
+                        })}
                       </div>
-                    )}
-                  </div>
 
-                  {/* Right Column: Custom Interactive Animated Graphics */}
-                  <div className="slide-graphic-card glass-panel">
-                    <div className="graphic-container">
-                      <GraphicDispatcher slide={currentSlide} />
+                      {/* Teacher Action Controls (Exposed only to verified teacher) */}
+                      {teacherMode && (
+                        <div className="teacher-actions-bar" style={{ marginTop: 'auto' }}>
+                          <button className="btn btn-secondary" onClick={() => openEditModal(currentSlide)} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
+                            📝 แก้ไขข้อความสไลด์
+                          </button>
+                          <button 
+                            className={`btn ${currentSlide.isHidden ? 'btn-outline' : 'btn-secondary'}`} 
+                            onClick={() => toggleSlideVisibility(currentSlide.id)}
+                            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                          >
+                            {currentSlide.isHidden ? '👁️ แสดงสไลด์ให้นักเรียนเห็น' : '👁️‍🌫️ ซ่อนสไลด์นี้จากนักเรียน'}
+                          </button>
+                        </div>
+                      )}
                     </div>
+
+                    {/* Right Column: Custom Interactive Animated Graphics */}
+                    <div className="slide-graphic-card glass-panel">
+                      <div className="graphic-container">
+                        <GraphicDispatcher slide={currentSlide} />
+                      </div>
+                    </div>
+
                   </div>
 
-                </div>
+                  {/* Bottom navigation slide bar */}
+                  <div className="slide-navigation-bar glass-panel">
+                    <button 
+                      className="btn btn-secondary" 
+                      onClick={handlePrev}
+                      disabled={currentSlideIdx === 0}
+                      style={{ opacity: currentSlideIdx === 0 ? 0.5 : 1, cursor: currentSlideIdx === 0 ? 'not-allowed' : 'pointer' }}
+                    >
+                      ◀ ย้อนกลับ
+                    </button>
 
-                {/* Bottom navigation slide bar */}
-                <div className="slide-navigation-bar glass-panel">
-                  <button 
-                    className="btn btn-secondary" 
-                    onClick={handlePrev}
-                    disabled={currentSlideIdx === 0}
-                    style={{ opacity: currentSlideIdx === 0 ? 0.5 : 1, cursor: currentSlideIdx === 0 ? 'not-allowed' : 'pointer' }}
-                  >
-                    ◀ ย้อนกลับ
-                  </button>
+                    <div className="slide-selector-dots">
+                      {visibleSlides.map((_, idx) => (
+                        <button 
+                          key={idx}
+                          className={`slide-dot ${idx === currentSlideIdx ? 'active' : ''}`}
+                          onClick={() => setCurrentSlideIdx(idx)}
+                          title={`ข้ามไปยังสไลด์ที่ ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
 
-                  <div className="slide-selector-dots">
-                    {visibleSlides.map((_, idx) => (
-                      <button 
-                        key={idx}
-                        className={`slide-dot ${idx === currentSlideIdx ? 'active' : ''}`}
-                        onClick={() => setCurrentSlideIdx(idx)}
-                        title={`ข้ามไปยังสไลด์ที่ ${idx + 1}`}
-                      />
-                    ))}
+                    <button 
+                      className="btn btn-primary" 
+                      onClick={handleNext}
+                      disabled={currentSlideIdx === visibleSlides.length - 1}
+                      style={{ opacity: currentSlideIdx === visibleSlides.length - 1 ? 0.5 : 1, cursor: currentSlideIdx === visibleSlides.length - 1 ? 'not-allowed' : 'pointer' }}
+                    >
+                      หน้าถัดไป ▶
+                    </button>
                   </div>
-
-                  <button 
-                    className="btn btn-primary" 
-                    onClick={handleNext}
-                    disabled={currentSlideIdx === visibleSlides.length - 1}
-                    style={{ opacity: currentSlideIdx === visibleSlides.length - 1 ? 0.5 : 1, cursor: currentSlideIdx === visibleSlides.length - 1 ? 'not-allowed' : 'pointer' }}
-                  >
-                    หน้าถัดไป ▶
-                  </button>
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
         )}
       </main>

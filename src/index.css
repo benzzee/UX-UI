@@ -833,3 +833,125 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Font Zoom and Fullscreen Controls */
+.presentation-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.font-zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(225, 29, 72, 0.15);
+  border-radius: 12px;
+  padding: 2px;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.05);
+}
+
+.font-zoom-btn {
+  font-family: var(--font-thai);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  background: transparent;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.font-zoom-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.font-zoom-btn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 3px 8px rgba(225, 29, 72, 0.2);
+}
+
+.font-zoom-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+/* Fullscreen Presentation Mode Styles */
+.presentation-area-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* When the wrapper goes fullscreen via Fullscreen API */
+.presentation-area-wrapper:fullscreen {
+  padding: 40px;
+  background: #fff1f2;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(251, 113, 133, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(225, 29, 72, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(254, 205, 211, 0.15) 0%, transparent 60%);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* Class-based fallback */
+.presentation-area-wrapper.fullscreen-mode {
+  padding: 40px;
+  background: #fff1f2;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(251, 113, 133, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(225, 29, 72, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(254, 205, 211, 0.15) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* Hide top navbar when fullscreen is active */
+body:has(:fullscreen) .top-navbar {
+  display: none !important;
+}
+
+/* Adjust slide grid inside fullscreen */
+.presentation-area-wrapper:fullscreen .slide-grid {
+  flex: 1;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.presentation-area-wrapper.fullscreen-mode .slide-grid {
+  flex: 1;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  min-height: 0;
+  align-items: stretch;
+}
+
+/* Make slide content and graphics scrollable/responsive in fullscreen if needed */
+.presentation-area-wrapper:fullscreen .slide-content-card,
+.presentation-area-wrapper:fullscreen .slide-graphic-card {
+  height: 100%;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.presentation-area-wrapper.fullscreen-mode .slide-content-card,
+.presentation-area-wrapper.fullscreen-mode .slide-graphic-card {
+  height: 100%;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
