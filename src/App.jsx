@@ -2681,6 +2681,1650 @@ const ColorHarmonyDemo = () => {
   );
 };
 
+// --- WEEK 4 INTERACTIVE ANIMATION COMPONENTS ---
+
+// 1. Motion Intro: abstract phone mockup with sliding elements
+const MotionIntroAnimation = () => {
+  const [animate, setAnimate] = useState(true);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimate(prev => !prev);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="visual-container" style={{ width: '100%', position: 'relative' }}>
+      <span className="art-badge">โมเดลบทนำ: ศิลปะการเคลื่อนไหว (Motion Design)</span>
+      <div style={{
+        position: 'relative',
+        width: '320px',
+        height: '380px',
+        background: 'linear-gradient(135deg, #1e293b, #0f172a)',
+        borderRadius: '32px',
+        border: '3px solid rgba(225,29,72,0.2)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px'
+      }}>
+        {/* Floating circles representing elements merging */}
+        <div style={{
+          position: 'absolute',
+          width: '100px',
+          height: '100px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(225,29,72,0.4) 0%, transparent 70%)',
+          transform: animate ? 'translate(-60px, -60px) scale(1)' : 'translate(0, 0) scale(1.3)',
+          transition: 'all 2s cubic-bezier(0.34, 1.56, 0.64, 1)'
+        }} />
+        <div style={{
+          position: 'absolute',
+          width: '120px',
+          height: '120px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(251,113,133,0.3) 0%, transparent 70%)',
+          transform: animate ? 'translate(60px, 60px) scale(1)' : 'translate(0, 0) scale(0.8)',
+          transition: 'all 2s cubic-bezier(0.34, 1.56, 0.64, 1)'
+        }} />
+
+        {/* Floating UI Card */}
+        <div style={{
+          width: '200px',
+          padding: '16px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: '20px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+          transform: animate ? 'translateY(0) rotate(0deg) scale(1)' : 'translateY(-20px) rotate(5deg) scale(1.05)',
+          transition: 'all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          zIndex: 5
+        }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#e11d48' }} />
+            <div style={{ height: '8px', width: '60px', background: 'rgba(255,255,255,0.3)', borderRadius: '4px' }} />
+          </div>
+          <div style={{ height: '6px', width: '100%', background: 'rgba(255,255,255,0.15)', borderRadius: '3px' }} />
+          <div style={{ height: '6px', width: '80%', background: 'rgba(255,255,255,0.15)', borderRadius: '3px' }} />
+          
+          <div style={{
+            height: '24px',
+            background: 'linear-gradient(90deg, #e11d48, #fb7185)',
+            borderRadius: '6px',
+            marginTop: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '9px',
+            color: 'white',
+            fontWeight: 'bold',
+            fontFamily: 'Kanit',
+            transform: animate ? 'scale(1)' : 'scale(1.05)',
+            transition: 'transform 1s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}>
+            MOTION DESIGN
+          </div>
+        </div>
+
+        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '10px', marginTop: '24px', zIndex: 5, fontFamily: 'Kanit' }}>
+          แอนิเมชันเพิ่มมิติและความลื่นไหล
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// 2. Why Motion Animation: Shows 4 Roles of Animation
+const WhyMotionAnimation = () => {
+  const [selectedRole, setSelectedRole] = useState(1);
+  const [phoneState, setPhoneState] = useState('idle'); // idle, loading, success
+  const [pulse, setPulse] = useState(false);
+  const [page, setPage] = useState(0); // 0 or 1
+  const [liked, setLiked] = useState(false);
+  
+  const handleRoleClick = (roleNum) => {
+    setSelectedRole(roleNum);
+    if (roleNum === 1) {
+      setPhoneState('idle');
+    } else if (roleNum === 2) {
+      setPulse(true);
+      const interval = setInterval(() => setPulse(p => !p), 1500);
+      return () => clearInterval(interval);
+    } else if (roleNum === 4) {
+      setLiked(false);
+    }
+  };
+
+  const handleStateButton = () => {
+    setPhoneState('loading');
+    setTimeout(() => {
+      setPhoneState('success');
+      setTimeout(() => setPhoneState('idle'), 2500);
+    }, 2000);
+  };
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">4 บทบาทสำคัญของ Motion Design ในงานออกแบบ</span>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+        
+        {/* Buttons Selector Left */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '240px' }}>
+          {[
+            { id: 1, title: '1. State Changes', desc: 'แจ้งเตือนสถานะการกระทำ' },
+            { id: 2, title: '2. Visual Hierarchy', desc: 'นำทางสายตาชี้จุดสำคัญ' },
+            { id: 3, title: '3. Spatial Awareness', desc: 'สร้างมิติเชิงพื้นที่ของแอป' },
+            { id: 4, title: '4. Immediate Feedback', desc: 'การตอบสนองเพื่อลดความสับสน' }
+          ].map(role => (
+            <button
+              key={role.id}
+              onClick={() => handleRoleClick(role.id)}
+              style={{
+                background: selectedRole === role.id ? 'var(--primary)' : 'white',
+                color: selectedRole === role.id ? 'white' : 'var(--text-dark)',
+                border: '1.5px solid',
+                borderColor: selectedRole === role.id ? 'var(--primary)' : '#e2e8f0',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                textAlign: 'left',
+                cursor: 'pointer',
+                fontFamily: 'Kanit',
+                boxShadow: selectedRole === role.id ? '0 4px 12px rgba(225,29,72,0.15)' : 'none',
+                transition: 'all 0.3s'
+              }}
+            >
+              <div style={{ fontSize: '11px', fontWeight: 'bold' }}>{role.title}</div>
+              <div style={{ fontSize: '9px', opacity: 0.8, marginTop: '2px' }}>{role.desc}</div>
+            </button>
+          ))}
+        </div>
+
+        {/* Smartphone mockup right */}
+        <div style={{
+          width: '260px',
+          height: '360px',
+          background: '#f8fafc',
+          borderRadius: '32px',
+          border: '3.5px solid #cbd5e1',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.06)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
+        }}>
+          {/* Status bar */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 16px', fontSize: '9px', color: '#94a3b8', background: 'white', borderBottom: '1px solid #f1f5f9' }}>
+            <span>09:41 น.</span>
+            <span>🔋 100%</span>
+          </div>
+
+          {/* Screen Content */}
+          <div style={{ flexGrow: 1, padding: '16px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+            {selectedRole === 1 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', justifyContent: 'center', height: '100%', animation: 'fadeIn 0.5s' }}>
+                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'Kanit', textAlign: 'center' }}>จำลองการส่งใบสมัคร:</span>
+                {phoneState === 'idle' && (
+                  <button 
+                    onClick={handleStateButton}
+                    style={{ background: '#e11d48', border: 'none', color: 'white', padding: '12px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontFamily: 'Kanit', boxShadow: '0 4px 10px rgba(225,29,72,0.2)' }}
+                  >
+                    ส่งใบสมัครเรียน
+                  </button>
+                )}
+                {phoneState === 'loading' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '32px', height: '32px', border: '3px solid #fca5a5', borderTop: '3px solid #e11d48', borderRadius: '50%', animation: 'spin 1s infinite linear' }}></div>
+                    <span style={{ fontSize: '10px', color: '#64748b', fontFamily: 'Kanit' }}>กำลังอัปโหลดไฟล์...</span>
+                  </div>
+                )}
+                {phoneState === 'success' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', animation: 'slideUp 0.3s' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#d1fae5', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', border: '2px solid #10b981' }}>✓</div>
+                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#065f46', fontFamily: 'Kanit' }}>ส่งสำเร็จเรียบร้อย!</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {selectedRole === 2 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '100%', animation: 'fadeIn 0.5s', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ height: '14px', background: '#cbd5e1', width: '90%', borderRadius: '4px', marginBottom: '6px' }}></div>
+                  <div style={{ height: '8px', background: '#e2e8f0', width: '70%', borderRadius: '4px', marginBottom: '4px' }}></div>
+                  <div style={{ height: '8px', background: '#e2e8f0', width: '50%', borderRadius: '4px' }}></div>
+                </div>
+                
+                {/* Pulsing visual alert to draw eyes */}
+                <div style={{
+                  background: '#fff1f2',
+                  padding: '16px',
+                  borderRadius: '16px',
+                  border: '1.5px solid #fb7185',
+                  textAlign: 'center',
+                  transform: pulse ? 'scale(1.03)' : 'scale(1)',
+                  boxShadow: pulse ? '0 10px 20px rgba(225,29,72,0.12)' : 'none',
+                  transition: 'all 0.5s ease',
+                  position: 'relative'
+                }}>
+                  <span style={{ fontSize: '11px', color: '#e11d48', fontWeight: 'bold', display: 'block', fontFamily: 'Kanit', marginBottom: '8px' }}>สมัครด่วน! หมดเขตคืนนี้</span>
+                  <button style={{
+                    background: '#e11d48',
+                    border: 'none',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    fontSize: '10px',
+                    fontWeight: 'bold',
+                    fontFamily: 'Kanit',
+                    boxShadow: '0 4px 10px rgba(225,29,72,0.2)'
+                  }}>
+                    กดเพื่อรับสิทธิ์เรียนฟรี
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {selectedRole === 3 && (
+              <div style={{ height: '100%', position: 'relative', display: 'flex', flexDirection: 'column', gap: '12px', animation: 'fadeIn 0.5s' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit' }}>
+                    {page === 0 ? 'หน้ารายการบทเรียน' : 'หน้าวิดีโอประกอบ'}
+                  </span>
+                  <button 
+                    onClick={() => setPage(p => p === 0 ? 1 : 0)}
+                    style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '4px 8px', borderRadius: '6px', fontSize: '9px', cursor: 'pointer', fontFamily: 'Kanit' }}
+                  >
+                    {page === 0 ? 'ดูวิดีโอ ➔' : '🠴 กลับรายการ'}
+                  </button>
+                </div>
+
+                <div style={{ flexGrow: 1, position: 'relative' }}>
+                  {/* Page 0 list */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    transform: page === 0 ? 'translateX(0)' : 'translateX(-110%)',
+                    transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    opacity: page === 0 ? 1 : 0
+                  }}>
+                    <div style={{ padding: '8px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '9px', fontFamily: 'Kanit' }}>🎬 บทที่ 1: แอนิเมชันเบื้องต้น</div>
+                    <div style={{ padding: '8px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '9px', fontFamily: 'Kanit' }}>🎬 บทที่ 2: มาตรฐานความถี่ 60fps</div>
+                  </div>
+
+                  {/* Page 1 Video player */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'white',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    transform: page === 1 ? 'translateX(0)' : 'translateX(110%)',
+                    transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    opacity: page === 1 ? 1 : 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px'
+                  }}>
+                    <div style={{ height: '80px', background: '#0f172a', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '20px' }}>▶</div>
+                    <div style={{ height: '6px', background: '#e2e8f0', width: '80%', borderRadius: '3px' }}></div>
+                    <div style={{ height: '6px', background: '#e2e8f0', width: '50%', borderRadius: '3px' }}></div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedRole === 4 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', justifyContent: 'center', height: '100%', animation: 'fadeIn 0.5s' }}>
+                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'Kanit', textAlign: 'center' }}>การคลิกโต้ตอบไมโครอินเตอร์แอคชัน:</span>
+                
+                <button
+                  onClick={() => setLiked(l => !l)}
+                  style={{
+                    background: liked ? '#ffe4e6' : 'white',
+                    border: '2px solid',
+                    borderColor: liked ? '#f43f5e' : '#cbd5e1',
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    fontSize: '28px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transform: liked ? 'scale(1.2)' : 'scale(1)',
+                    transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.3)',
+                    boxShadow: liked ? '0 4px 12px rgba(244,63,94,0.3)' : 'none'
+                  }}
+                >
+                  {liked ? '❤️' : '🤍'}
+                </button>
+                <span style={{ fontSize: '10px', color: '#94a3b8', fontStyle: 'italic' }}>
+                  {liked ? 'ยินดีด้วย! หลั่งสาร Dopamine' : 'ลองกดปุ่มเพื่อรับ feedback ทันที'}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 3. Gestalt Motion Animation: Visualizing Gestalt Principles
+const GestaltMotionAnimation = () => {
+  const [tab, setTab] = useState('common-fate');
+  const [animate, setAnimate] = useState(false);
+  const [modal, setModal] = useState(false);
+
+  useEffect(() => {
+    setAnimate(false);
+  }, [tab]);
+
+  const handleTrigger = () => {
+    setAnimate(true);
+    if (tab === 'figure-ground') {
+      setModal(true);
+    } else {
+      setTimeout(() => setAnimate(false), 2500);
+    }
+  };
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">ทฤษฎีจิตวิทยากลุ่ม Gestalt กับแอนิเมชัน</span>
+      
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}>
+        {['common-fate', 'continuity', 'figure-ground'].map(t => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`btn ${tab === t ? 'btn-primary' : 'btn-outline'}`}
+            style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+          >
+            {t === 'common-fate' && 'Common Fate'}
+            {t === 'continuity' && 'Continuity'}
+            {t === 'figure-ground' && 'Figure-Ground'}
+          </button>
+        ))}
+      </div>
+
+      <div style={{
+        width: '360px',
+        height: '280px',
+        background: 'white',
+        border: '1.5px solid rgba(225,29,72,0.18)',
+        borderRadius: '24px',
+        boxShadow: '0 8px 25px rgba(0,0,0,0.03)',
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {tab === 'common-fate' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
+            <div style={{ display: 'flex', gap: '30px', justifyContent: 'center', height: '100px', alignItems: 'center', width: '100%' }}>
+              {[
+                { name: 'A1', type: 'group' },
+                { name: 'A2', type: 'group' },
+                { name: 'A3', type: 'group' },
+                { name: 'B1', type: 'solo' }
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '8px',
+                    background: item.type === 'group' ? '#e11d48' : '#64748b',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    transition: 'transform 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transform: animate 
+                      ? (item.type === 'group' ? 'translateY(-30px)' : 'translateX(25px)') 
+                      : 'translate(0, 0)'
+                  }}
+                >
+                  {item.name}
+                </div>
+              ))}
+            </div>
+            <button className="btn btn-secondary" onClick={handleTrigger} style={{ padding: '6px 12px', fontSize: '10px' }}>
+              ทดสอบให้วัตถุขยับ (Common Fate)
+            </button>
+            <span style={{ fontSize: '9px', color: '#94a3b8', textAlign: 'center', fontFamily: 'Kanit' }}>
+              * A1, A2, A3 วิ่งทิศเดียวกัน ทำให้สมองคิดว่าเป็นพวกเดียวกัน
+            </span>
+          </div>
+        )}
+
+        {tab === 'continuity' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
+            <div style={{ width: '280px', height: '100px', border: '1px dashed #cbd5e1', borderRadius: '12px', position: 'relative', overflow: 'hidden', background: '#f8fafc' }}>
+              {/* Curve line representation */}
+              <svg width="280" height="100" style={{ position: 'absolute', top: 0, left: 0 }}>
+                <path d="M 20,80 Q 80,10 140,80 T 260,80" fill="none" stroke="#e2e8f0" strokeWidth="3" />
+              </svg>
+
+              {/* Moving ball */}
+              <div style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                background: '#e11d48',
+                position: 'absolute',
+                top: animate ? '65px' : '72px',
+                left: animate ? '230px' : '12px',
+                transition: animate ? 'all 2s cubic-bezier(0.25, 1, 0.5, 1)' : 'none'
+              }} />
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button className="btn btn-secondary" onClick={() => { setAnimate(false); setTimeout(() => setAnimate(true), 100); }} style={{ padding: '6px 12px', fontSize: '10px' }}>
+                เล่นอนิเมชันต่อเนื่อง
+              </button>
+              <button className="btn btn-outline" onClick={() => setAnimate(false)} style={{ padding: '6px 12px', fontSize: '10px' }}>
+                รีเซ็ต
+              </button>
+            </div>
+            <span style={{ fontSize: '9px', color: '#94a3b8', textAlign: 'center', fontFamily: 'Kanit' }}>
+              สมองติดตามวัตถุที่ขยับเป็นเส้นโค้งที่ราบรื่นได้ง่ายมาก (Smooth Tracking)
+            </span>
+          </div>
+        )}
+
+        {tab === 'figure-ground' && (
+          <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+            <button className="btn btn-secondary" onClick={handleTrigger}>
+              เปิดการเตือน Modal Overlay
+            </button>
+
+            {modal && (
+              <div 
+                onClick={() => setModal(false)}
+                style={{
+                  position: 'absolute',
+                  top: 0, left: 0, right: 0, bottom: 0,
+                  background: 'rgba(15, 23, 42, 0.6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 50,
+                  animation: 'fadeIn 0.3s'
+                }}
+              >
+                <div 
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    width: '200px',
+                    background: 'white',
+                    padding: '16px',
+                    borderRadius: '16px',
+                    textAlign: 'center',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+                    animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
+                >
+                  <span style={{ fontSize: '24px' }}>🛡️</span>
+                  <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit', marginTop: '8px' }}>ความปลอดภัยสูงสุด</h5>
+                  <p style={{ fontSize: '9px', color: '#64748b', marginTop: '4px', lineHeight: '1.4' }}>บ็อกซ์เตือนลอยขึ้น (Figure) หลังกั้นฉากหลัง (Ground)</p>
+                  <button className="btn btn-primary" onClick={() => setModal(false)} style={{ padding: '4px 10px', fontSize: '9px', marginTop: '10px' }}>ตกลง</button>
+                </div>
+              </div>
+            )}
+            <span style={{ fontSize: '9px', color: '#94a3b8', textAlign: 'center', fontFamily: 'Kanit' }}>
+              การทำฉากหลังให้มืดลงช่วยระบุว่า Modal อยู่ชั้นหน้าสุด (Figure)
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// 4. Preattentive & Reduced Motion simulation
+const PreattentiveReducedAnimation = () => {
+  const [reduced, setReduced] = useState(false);
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">แล็บเปรียบเทียบ Reduced Motion เพื่อการเข้าถึง</span>
+      
+      {/* Controls */}
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <button
+          onClick={() => { setReduced(false); setShow(false); }}
+          className={`btn ${!reduced ? 'btn-danger' : 'btn-outline'}`}
+          style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+        >
+          Reduced Motion (OFF)
+        </button>
+        <button
+          onClick={() => { setReduced(true); setShow(false); }}
+          className={`btn ${reduced ? 'btn-primary' : 'btn-outline'}`}
+          style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+        >
+          Reduced Motion (ON)
+        </button>
+      </div>
+
+      {/* Simulator view */}
+      <div style={{
+        width: '320px',
+        height: '240px',
+        background: '#f8fafc',
+        border: '2px solid rgba(225,29,72,0.18)',
+        borderRadius: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: '20px'
+      }}>
+        {!show ? (
+          <button className="btn btn-secondary" onClick={() => setShow(true)}>
+            🔔 คลิกเพื่อทดสอบระบบเตือน
+          </button>
+        ) : (
+          <div style={{
+            background: 'white',
+            border: '2.5px solid #e11d48',
+            borderRadius: '16px',
+            padding: '16px',
+            textAlign: 'center',
+            boxShadow: '0 8px 20px rgba(225,29,72,0.1)',
+            width: '240px',
+            animation: reduced 
+              ? 'fadeIn 0.6s ease' 
+              : 'intensePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+          }}>
+            <span style={{ fontSize: '32px' }}>🚨</span>
+            <h4 style={{ fontSize: '12px', fontWeight: 'bold', color: '#be123c', fontFamily: 'Kanit', marginTop: '4px' }}>เตือนการดาวน์โหลดเสร็จ!</h4>
+            <p style={{ fontSize: '9px', color: '#64748b', marginTop: '4px' }}>
+              {reduced ? 'เอฟเฟกต์ Fade-in นุ่มนวล ถนอมสมองและดวงตา' : 'เอฟเฟกต์ซูมหมุนสะดุดตาอย่างรวดเร็ว (อาจเวียนหัว)'}
+            </p>
+            <button className="btn btn-outline" onClick={() => setShow(false)} style={{ padding: '4px 8px', fontSize: '8px', marginTop: '8px' }}>ปิด</button>
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes intensePop {
+          0% { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+          70% { transform: scale(1.1) rotate(5deg); }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// 5. Disney UI Animation: Squash & Stretch, Anticipation, Follow-through
+const DisneyUIAnimation = () => {
+  const [mode, setMode] = useState('squash');
+  const [squashed, setSquashed] = useState(false);
+  const [shaking, setShaking] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    setSquashed(false);
+    setShaking(false);
+    setDeleted(false);
+    setItems([]);
+  }, [mode]);
+
+  const handleSquash = () => {
+    setSquashed(true);
+    setTimeout(() => setSquashed(false), 200);
+  };
+
+  const handleAnticipation = () => {
+    setShaking(true);
+    setTimeout(() => {
+      setShaking(false);
+      setDeleted(true);
+    }, 800);
+  };
+
+  const handleFollowThrough = () => {
+    setItems([]);
+    setTimeout(() => {
+      setItems([
+        { id: 1, text: '✓ ข้อมูลบทเรียนที่ 1 โหลดแล้ว' },
+        { id: 2, text: '✓ ข้อมูลบทเรียนที่ 2 โหลดแล้ว' },
+        { id: 3, text: '✓ ข้อมูลบทเรียนที่ 3 โหลดแล้ว' }
+      ]);
+    }, 100);
+  };
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">ทดสอบกฎ 3 ข้อเด่นของ Disney Animation ใน UI</span>
+      
+      {/* Tab controls */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}>
+        {['squash', 'anticipation', 'follow-through'].map(m => (
+          <button
+            key={m}
+            onClick={() => setMode(m)}
+            className={`btn ${mode === m ? 'btn-primary' : 'btn-outline'}`}
+            style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+          >
+            {m === 'squash' && 'Squash & Stretch'}
+            {m === 'anticipation' && 'Anticipation'}
+            {m === 'follow-through' && 'Stagger / Follow'}
+          </button>
+        ))}
+      </div>
+
+      <div style={{
+        width: '320px',
+        height: '240px',
+        background: 'white',
+        border: '1.5px solid rgba(225,29,72,0.18)',
+        borderRadius: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        position: 'relative'
+      }}>
+        {mode === 'squash' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+            <span style={{ fontSize: '10px', color: '#64748b', fontFamily: 'Kanit' }}>ปุ่มจะหดและยืดให้ความรู้สึกหยุ่นเหมือนยาง:</span>
+            <button
+              onClick={handleSquash}
+              style={{
+                background: '#e11d48',
+                border: 'none',
+                color: 'white',
+                padding: '16px 32px',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                fontFamily: 'Kanit',
+                cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(225,29,72,0.2)',
+                transform: squashed ? 'scaleX(1.2) scaleY(0.7)' : 'scaleX(1) scaleY(1)',
+                transition: 'transform 0.1s ease-in-out'
+              }}
+            >
+              แตะเพื่อกดปุ่มเด้ง
+            </button>
+          </div>
+        )}
+
+        {mode === 'anticipation' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', width: '100%' }}>
+            <span style={{ fontSize: '10px', color: '#64748b', fontFamily: 'Kanit' }}>สั่นเตือนก่อนเริ่มลบวัตถุจริง:</span>
+            
+            {!deleted ? (
+              <div 
+                style={{
+                  padding: '12px',
+                  background: '#ffe4e6',
+                  border: '1px dashed #f43f5e',
+                  borderRadius: '8px',
+                  color: '#e11d48',
+                  fontSize: '11px',
+                  fontFamily: 'Kanit',
+                  width: '200px',
+                  textAlign: 'center',
+                  animation: shaking ? 'anticipationShake 0.15s infinite' : 'none'
+                }}
+              >
+                🗑️ เอกสารรายงานผลคะแนนนักเรียน
+              </div>
+            ) : (
+              <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 'bold', fontFamily: 'Kanit' }}>✓ ลบข้อมูลสำเร็จแล้ว!</span>
+            )}
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button 
+                className="btn btn-danger" 
+                onClick={handleAnticipation} 
+                disabled={deleted} 
+                style={{ padding: '6px 12px', fontSize: '10px' }}
+              >
+                ลบข้อมูล
+              </button>
+              <button 
+                className="btn btn-outline" 
+                onClick={() => setDeleted(false)} 
+                style={{ padding: '6px 12px', fontSize: '10px' }}
+              >
+                กู้คืนใหม่
+              </button>
+            </div>
+          </div>
+        )}
+
+        {mode === 'follow-through' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%' }}>
+            <button className="btn btn-secondary" onClick={handleFollowThrough} style={{ padding: '6px 12px', fontSize: '10px' }}>
+              กดแสดงการดาวน์โหลดรายการย่อย
+            </button>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '220px', minHeight: '90px' }}>
+              {items.map((item, index) => (
+                <div
+                  key={item.id}
+                  style={{
+                    padding: '8px 12px',
+                    background: '#f8fafc',
+                    border: '1.5px solid #cbd5e1',
+                    borderRadius: '8px',
+                    fontSize: '10px',
+                    color: '#1e293b',
+                    fontFamily: 'Kanit',
+                    opacity: 0,
+                    transform: 'translateY(15px)',
+                    animation: 'staggerFadeIn 0.4s forwards ease',
+                    animationDelay: `${index * 150}ms`
+                  }}
+                >
+                  {item.text}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes anticipationShake {
+          0% { transform: translateX(0); }
+          25% { transform: translateX(-4px) rotate(-1deg); }
+          75% { transform: translateX(4px) rotate(1deg); }
+          100% { transform: translateX(0); }
+        }
+        @keyframes staggerFadeIn {
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// 6. Duration Lab Animation: Modal drawer sliding
+const DurationLabAnimation = () => {
+  const [duration, setDuration] = useState(300); // ms
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">แล็บวิเคราะห์เวลาที่เหมาะสม (Duration Lab)</span>
+      
+      {/* Controls */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {[100, 300, 800].map(d => (
+          <button
+            key={d}
+            onClick={() => { setDuration(d); setShow(false); }}
+            className={`btn ${duration === d ? 'btn-primary' : 'btn-outline'}`}
+            style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+          >
+            {d}ms ({d === 100 ? 'เร็วเกินไป' : d === 300 ? 'แนะนำ' : 'ช้าเกินไป'})
+          </button>
+        ))}
+      </div>
+
+      <div style={{
+        width: '320px',
+        height: '260px',
+        background: '#f8fafc',
+        border: '2px solid rgba(225,29,72,0.18)',
+        borderRadius: '24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <button className="btn btn-secondary" onClick={() => setShow(s => !s)}>
+          {show ? 'ซ่อนแผงตั้งค่า 🠴' : 'แสดงแผงตั้งค่า 🠶'}
+        </button>
+
+        {/* Sliding Drawer Container */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: '180px',
+          background: 'white',
+          borderLeft: '2px solid #e11d48',
+          boxShadow: '-4px 0 15px rgba(0,0,0,0.08)',
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          transform: show ? 'translateX(0)' : 'translateX(100%)',
+          transition: `transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`
+        }}>
+          <h5 style={{ fontSize: '11px', fontWeight: 'bold', color: '#e11d48', fontFamily: 'Kanit' }}>เมนูตั้งค่าแอป</h5>
+          <div style={{ height: '2px', background: '#e11d48', width: '40px' }}></div>
+          <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px' }}></div>
+          <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px' }}></div>
+          <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px' }}></div>
+          
+          <button 
+            className="btn btn-outline" 
+            onClick={() => setShow(false)} 
+            style={{ marginTop: 'auto', padding: '4px 8px', fontSize: '9px' }}
+          >
+            ปิดแผง
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 7. Easing Sandbox Animation: Falling elements comparison
+const EasingSandboxAnimation = () => {
+  const [animate, setAnimate] = useState(false);
+
+  const triggerAnimation = () => {
+    setAnimate(false);
+    setTimeout(() => setAnimate(true), 50);
+  };
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">ตู้เปรียบเทียบ Easing Curves (เปรียบเทียบความเร่ง)</span>
+      
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+        
+        {/* Simulator box */}
+        <div style={{
+          width: '280px',
+          height: '240px',
+          background: 'linear-gradient(to bottom, #f8fafc, white)',
+          border: '2px solid rgba(225,29,72,0.18)',
+          borderRadius: '24px',
+          padding: '16px',
+          display: 'flex',
+          justifyContent: 'space-around',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {[
+            { name: 'Linear', color: '#64748b', bezier: 'linear', desc: 'แข็งทื่อ' },
+            { name: 'Ease-In', color: '#f59e0b', bezier: 'cubic-bezier(0.4, 0, 1, 1)', desc: 'เร่งท้าย' },
+            { name: 'Ease-Out', color: '#10b981', bezier: 'cubic-bezier(0, 0, 0.2, 1)', desc: 'เบรกเบา' },
+            { name: 'Spring', color: '#e11d48', bezier: 'cubic-bezier(0.34, 1.56, 0.64, 1)', desc: 'ดีดกลับ' }
+          ].map(curve => (
+            <div key={curve.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '8px', color: '#94a3b8', fontWeight: 'bold' }}>{curve.name}</span>
+              
+              {/* Vertical line path */}
+              <div style={{ width: '2px', background: '#f1f5f9', flexGrow: 1, margin: '8px 0', position: 'relative' }}>
+                {/* Moving ball */}
+                <div style={{
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  background: curve.color,
+                  position: 'absolute',
+                  left: '-8px',
+                  top: animate ? '160px' : '0px',
+                  transition: animate ? `top 1.2s ${curve.bezier}` : 'none',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }} />
+              </div>
+
+              <span style={{ fontSize: '8px', color: curve.color, fontWeight: 'bold', fontFamily: 'Kanit' }}>{curve.desc}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Button & details */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+          <button className="btn btn-primary" onClick={triggerAnimation}>
+            🟢 ปล่อยวัตถุพร้อมกัน
+          </button>
+          <button className="btn btn-outline" onClick={() => setAnimate(false)} style={{ padding: '6px 12px', fontSize: '10px' }}>
+            รีเซ็ตตำแหน่ง
+          </button>
+          <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '9px', color: '#64748b', maxWidth: '140px', lineHeight: '1.3', textAlign: 'center', fontFamily: 'Kanit' }}>
+            สังเกต: <b>Spring</b> จะขยับเลยจุดล่างสุดแล้วเด้งกลับ
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// 8. Choreography & Stagger animation
+const ChoreographyStaggerAnimation = () => {
+  const [stagger, setStagger] = useState(true);
+  const [delay, setDelay] = useState(60); // ms
+  const [items] = useState([1, 2, 3, 4, 5]);
+  const [animate, setAnimate] = useState(false);
+
+  const handleRefresh = () => {
+    setAnimate(false);
+    setTimeout(() => {
+      setAnimate(true);
+    }, 80);
+  };
+
+  useEffect(() => {
+    handleRefresh();
+  }, [stagger, delay]);
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">แผนผังจัดระเบียบลำดับเวลา (Staggered Choreography)</span>
+      
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
+        
+        {/* Controls Panel */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: '#f8fafc', padding: '16px', borderRadius: '20px', border: '1px solid #cbd5e1', width: '180px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '10px', fontWeight: 'bold', fontFamily: 'Kanit' }}>โหมด Stagger:</span>
+            <input 
+              type="checkbox" 
+              checked={stagger} 
+              onChange={(e) => setStagger(e.target.checked)}
+              style={{ accentColor: '#e11d48', cursor: 'pointer' }}
+            />
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', fontWeight: 'bold', color: '#475569', marginBottom: '2px', fontFamily: 'Kanit' }}>
+              <span>Delay: {delay}ms</span>
+            </div>
+            <input 
+              type="range" 
+              min="20" 
+              max="200" 
+              value={delay} 
+              disabled={!stagger}
+              onChange={(e) => setDelay(Number(e.target.value))}
+              style={{ width: '100%', accentColor: '#e11d48' }}
+            />
+          </div>
+
+          <button className="btn btn-primary" onClick={handleRefresh} style={{ padding: '6px', fontSize: '10px' }}>
+            🔄 โหลดรายการใหม่
+          </button>
+        </div>
+
+        {/* List simulation */}
+        <div style={{
+          width: '240px',
+          height: '240px',
+          background: 'white',
+          border: '1.5px solid rgba(225,29,72,0.18)',
+          borderRadius: '24px',
+          boxShadow: '0 8px 25px rgba(0,0,0,0.03)',
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px',
+          justifyContent: 'center',
+          overflow: 'hidden'
+        }}>
+          {animate && items.map((i, idx) => (
+            <div
+              key={i}
+              style={{
+                padding: '8px 12px',
+                background: '#fff1f2',
+                border: '1px solid rgba(225,29,72,0.1)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '10px',
+                color: '#be123c',
+                fontFamily: 'Kanit',
+                opacity: 0,
+                transform: 'translateY(20px)',
+                animation: 'staggerFadeIn 0.4s forwards cubic-bezier(0.16, 1, 0.3, 1)',
+                animationDelay: stagger ? `${idx * delay}ms` : '0ms'
+              }}
+            >
+              <span style={{ fontSize: '12px' }}>🔔</span>
+              <span>แจ้งเตือนนักเรียนทำแบบฝึกหัดที่ {i}</span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// 9. Microinteraction Sandbox: Dan Saffer Model
+const MicrointeractionSandbox = () => {
+  const [activeStage, setActiveStage] = useState(null); // trigger, rules, feedback, loop
+  const [isMuted, setIsMuted] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleMuteToggle = () => {
+    setActiveStage('trigger');
+    setClickCount(c => c + 1);
+
+    setTimeout(() => {
+      setActiveStage('rules');
+      setTimeout(() => {
+        setIsMuted(prev => !prev);
+        setActiveStage('feedback');
+        setTimeout(() => {
+          setActiveStage('loop');
+        }, 800);
+      }, 600);
+    }, 400);
+  };
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">ห้องทดสอบโมเดลไมโครอินเตอร์แอคชัน (Dan Saffer Model)</span>
+      
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+        
+        {/* Interactive Mute Button */}
+        <div style={{
+          width: '180px',
+          height: '240px',
+          background: 'white',
+          border: '2px solid rgba(225,29,72,0.18)',
+          borderRadius: '24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '16px',
+          boxShadow: '0 8px 20px rgba(0,0,0,0.03)'
+        }}>
+          <button
+            onClick={handleMuteToggle}
+            style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              background: isMuted ? '#cbd5e1' : '#ffe4e6',
+              border: '2px solid',
+              borderColor: isMuted ? '#94a3b8' : '#f43f5e',
+              fontSize: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transform: activeStage === 'feedback' ? 'scale(1.2) rotate(15deg)' : 'scale(1)',
+              transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}
+          >
+            {isMuted ? '🔕' : '🔔'}
+          </button>
+          
+          <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'Kanit' }}>
+            สถานะ: {isMuted ? 'ปิดเสียงแจ้งเตือน' : 'เปิดเสียงแจ้งเตือน'}
+          </span>
+          <span style={{ fontSize: '9px', color: '#cbd5e1' }}>กดสัมผัสแล้ว {clickCount} ครั้ง</span>
+        </div>
+
+        {/* Diagram details */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '220px' }}>
+          {[
+            { id: 'trigger', title: '1. Trigger (ตัวเริ่ม)', desc: 'ผู้ใช้นำนิ้วกดสัมผัสปุ่มกระดิ่ง' },
+            { id: 'rules', title: '2. Rules (เงื่อนไขลอจิก)', desc: 'ระบบคำนวณเปลี่ยนค่า Mute = !Mute' },
+            { id: 'feedback', title: '3. Feedback (การตอบรับ)', desc: 'กระดิ่งสั่นขยายตัว และเปลี่ยนสีสัญลักษณ์' },
+            { id: 'loop', title: '4. Loops & Modes (ระบบค้าง)', desc: 'ไอคอนคงสถานะปิด/เปิดเสียงไว้จนกว่าจะกดใหม่' }
+          ].map(stage => {
+            const isHighlighted = activeStage === stage.id;
+            return (
+              <div
+                key={stage.id}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  background: isHighlighted ? '#fff1f2' : 'transparent',
+                  border: isHighlighted ? '1.5px solid #fb7185' : '1px solid #f1f5f9',
+                  boxShadow: isHighlighted ? '0 4px 10px rgba(225,29,72,0.06)' : 'none',
+                  transition: 'all 0.3s'
+                }}
+              >
+                <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: isHighlighted ? '#e11d48' : '#1e293b', fontFamily: 'Kanit', display: 'block' }}>{stage.title}</span>
+                <span style={{ fontSize: '9px', color: isHighlighted ? '#be123c' : '#64748b' }}>{stage.desc}</span>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// 10. Loading Screen Comparison: Shimmer vs Spinner
+const LoadingComparisonAnimation = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoading(false);
+      setTimeout(() => setLoading(true), 1500);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">เปรียบเทียบการลด Perceived Wait Time</span>
+      
+      <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+        
+        {/* Left: Spinner */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#64748b', fontFamily: 'Kanit' }}>1. แบบหมุนดั้งเดิม (Spinner)</span>
+          <div style={{
+            width: '160px',
+            height: '240px',
+            background: 'white',
+            border: '2px solid rgba(225,29,72,0.1)',
+            borderRadius: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.03)'
+          }}>
+            {loading ? (
+              <div style={{ width: '32px', height: '32px', border: '3.5px solid #e2e8f0', borderTop: '3.5px solid #e11d48', borderRadius: '50%', animation: 'spin 1s infinite linear' }}></div>
+            ) : (
+              <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 'bold', fontFamily: 'Kanit' }}>✓ โหลดข้อมูลครบแล้ว</div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: Skeleton Screen */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#e11d48', fontFamily: 'Kanit' }}>2. เค้าโครงร่างหลอกตา (Skeleton Shimmer)</span>
+          <div style={{
+            width: '160px',
+            height: '240px',
+            background: 'white',
+            border: '2.5px solid #fb7185',
+            borderRadius: '24px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            boxShadow: '0 8px 20px rgba(225,29,72,0.05)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {loading ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', width: '100%' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div className="skeleton-shimmer" style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#e2e8f0' }}></div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flexGrow: 1 }}>
+                    <div className="skeleton-shimmer" style={{ height: '8px', background: '#e2e8f0', borderRadius: '4px', width: '80%' }}></div>
+                    <div className="skeleton-shimmer" style={{ height: '6px', background: '#e2e8f0', borderRadius: '4px', width: '50%' }}></div>
+                  </div>
+                </div>
+                <div className="skeleton-shimmer" style={{ height: '54px', background: '#e2e8f0', borderRadius: '8px', width: '100%' }}></div>
+                <div className="skeleton-shimmer" style={{ height: '24px', background: '#e2e8f0', borderRadius: '6px', width: '100%', marginTop: 'auto' }}></div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', width: '100%', animation: 'fadeIn 0.4s' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#ffe4e6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>👩‍🎨</div>
+                  <div>
+                    <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#1e293b', display: 'block', fontFamily: 'Kanit' }}>น้องครูรุ่งนภา</span>
+                    <span style={{ fontSize: '7px', color: '#94a3b8', display: 'block' }}>ปวช.2 ศิลปกรรมดิจิทัล</span>
+                  </div>
+                </div>
+                <div style={{ height: '54px', background: '#fff1f2', borderRadius: '8px', border: '1px solid rgba(225,29,72,0.1)', padding: '6px', fontSize: '8px', color: '#be123c', fontFamily: 'Kanit', lineHeight: '1.3' }}>
+                  การทำสไลด์หน่วยที่ 4 เรื่องแอนิเมชันเสร็จสมบูรณ์เรียบร้อยแล้วค่ะ!
+                </div>
+                <button style={{ height: '24px', border: 'none', background: '#e11d48', color: 'white', fontSize: '8px', fontWeight: 'bold', borderRadius: '6px', marginTop: 'auto', fontFamily: 'Kanit' }}>ส่งการบ้านห้องเรียน</button>
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
+
+      <style>{`
+        .skeleton-shimmer {
+          position: relative;
+          overflow: hidden;
+        }
+        .skeleton-shimmer::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+          transform: translateX(-100%);
+          animation: shimmerMove 1.5s infinite;
+        }
+        @keyframes shimmerMove {
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// 11. Animation Tools details component
+const AnimationToolsAnimation = () => {
+  const [activeTool, setActiveTool] = useState('figma');
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">ตารางเปรียบเทียบเครื่องมือสร้าง Motion Design</span>
+      
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '14px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {['figma', 'framer', 'lottie', 'css'].map(tool => (
+          <button
+            key={tool}
+            onClick={() => setActiveTool(tool)}
+            className={`btn ${activeTool === tool ? 'btn-primary' : 'btn-outline'}`}
+            style={{ padding: '6px 10px', fontSize: '9px', borderRadius: '6px', textTransform: 'uppercase' }}
+          >
+            {tool}
+          </button>
+        ))}
+      </div>
+
+      {/* Concept Card Display */}
+      <div style={{
+        width: '320px',
+        height: '250px',
+        background: 'white',
+        border: '1.5px solid rgba(225,29,72,0.18)',
+        borderRadius: '24px',
+        padding: '16px',
+        boxShadow: '0 8px 25px rgba(0,0,0,0.03)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px'
+      }}>
+        {activeTool === 'figma' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', animation: 'fadeIn 0.4s' }}>
+            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit' }}>Figma Smart Animate</span>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', margin: '10px 0' }}>
+              <div style={{ width: '70px', height: '60px', border: '1.5px solid #cbd5e1', borderRadius: '8px', padding: '6px', textAlign: 'center', background: '#f8fafc' }}>
+                <span style={{ fontSize: '7px', color: '#94a3b8', display: 'block' }}>Frame 1</span>
+                <div style={{ width: '16px', height: '16px', background: '#e11d48', borderRadius: '4px', margin: '6px auto 0 auto' }}></div>
+              </div>
+              <span style={{ alignSelf: 'center', fontSize: '14px', color: '#e11d48' }}>🠵</span>
+              <div style={{ width: '70px', height: '60px', border: '1.5px solid #cbd5e1', borderRadius: '8px', padding: '6px', textAlign: 'center', background: '#f8fafc' }}>
+                <span style={{ fontSize: '7px', color: '#94a3b8', display: 'block' }}>Frame 2</span>
+                <div style={{ width: '32px', height: '16px', background: '#e11d48', borderRadius: '4px', margin: '6px auto 0 auto', opacity: 0.7 }}></div>
+              </div>
+            </div>
+            <p style={{ fontSize: '9.5px', color: '#64748b', lineHeight: '1.4', fontFamily: 'Kanit' }}>
+              • เปรียบเทียบชื่อ Layer ที่ตรงกันระหว่าง 2 เฟรม<br />
+              • ขยับคุณสมบัติ: Size, Position, Color, Opacity อัตโนมัติ<br />
+              • ข้อจำกัด: ไม่สามารถขยับ Vector path ละเอียดสูงได้
+            </p>
+          </div>
+        )}
+
+        {activeTool === 'framer' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', animation: 'fadeIn 0.4s' }}>
+            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit' }}>Framer Physics Engine</span>
+            <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '9px', fontFamily: 'Inter' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}><span>stiffness (ความหยุ่น):</span> <span style={{ color: '#e11d48', fontWeight: 'bold' }}>180</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}><span>damping (ความหนืด):</span> <span style={{ color: '#e11d48', fontWeight: 'bold' }}>12</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>mass (น้ำหนักมวล):</span> <span style={{ color: '#e11d48', fontWeight: 'bold' }}>1.0</span></div>
+            </div>
+            <p style={{ fontSize: '9.5px', color: '#64748b', lineHeight: '1.4', fontFamily: 'Kanit' }}>
+              • ใช้ระบบฟิสิกส์สปริง (Spring Physics) แทนระยะเวลาทั่วไป<br />
+              • ปรับแต่งฟีลลิ่งการเด้งตอบสนองของหน้าจอโทรศัพท์ได้ละเอียดสูงสุด<br />
+              • ส่งออกโค้ดสปริงเพื่อใช้งานใน React App ได้
+            </p>
+          </div>
+        )}
+
+        {activeTool === 'lottie' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', animation: 'fadeIn 0.4s' }}>
+            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit' }}>After Effects & Lottie Workflow</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', margin: '4px 0' }}>
+              <span style={{ fontSize: '8px', background: '#3b82f6', color: 'white', padding: '2px 6px', borderRadius: '4px' }}>AE Design</span>
+              <span>➔</span>
+              <span style={{ fontSize: '8px', background: '#10b981', color: 'white', padding: '2px 6px', borderRadius: '4px' }}>JSON File</span>
+              <span>➔</span>
+              <span style={{ fontSize: '8px', background: '#e11d48', color: 'white', padding: '2px 6px', borderRadius: '4px' }}>Lottie Player</span>
+            </div>
+            <p style={{ fontSize: '9.5px', color: '#64748b', lineHeight: '1.4', fontFamily: 'Kanit' }}>
+              • ออกแบบอนิเมชันรูปวาดการ์ตูนเคลื่อนไหวซับซ้อนใน After Effects<br />
+              • แปลงผลลัพธ์เป็นข้อมูลดิบ JSON ขนาดเล็กมาก (เร็วกว่า GIF 600%)<br />
+              • ใช้เขียนควบคุมสั่งการขยับผ่าน JS: Play, Pause ได้สะดวก
+            </p>
+          </div>
+        )}
+
+        {activeTool === 'css' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', animation: 'fadeIn 0.4s' }}>
+            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', fontFamily: 'Kanit' }}>CSS Transition & Keyframes</span>
+            <pre style={{
+              background: '#0f172a',
+              color: '#38bdf8',
+              padding: '8px',
+              borderRadius: '8px',
+              fontSize: '8px',
+              overflow: 'auto',
+              fontFamily: 'Courier New',
+              lineHeight: '1.2'
+            }}>
+{`.btn {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn:hover {
+  transform: scale(1.05);
+}`}
+            </pre>
+            <p style={{ fontSize: '9px', color: '#64748b', lineHeight: '1.4', fontFamily: 'Kanit' }}>
+              • ทำงานผ่าน Web Browser ได้เสถียร ไม่พึ่งพาไลบรารีเสริมภายนอก<br />
+              • Transition: ใช้เคลื่อนไหว 2 State | Keyframes: เล่นอนิเมชันเป็นลูปซับซ้อน
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// 12. GPU Performance Simulator
+const GpuPerformanceSim = () => {
+  const [gpuEnabled, setGpuEnabled] = useState(true);
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimate(prev => !prev);
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">เครื่องจำลองประสิทธิภาพ FPS (CPU Reflow vs GPU Composite)</span>
+      
+      {/* Toggles */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+        <button
+          onClick={() => setGpuEnabled(false)}
+          className={`btn ${!gpuEnabled ? 'btn-danger' : 'btn-outline'}`}
+          style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+        >
+          CPU Reflow (width/height)
+        </button>
+        <button
+          onClick={() => setGpuEnabled(true)}
+          className={`btn ${gpuEnabled ? 'btn-primary' : 'btn-outline'}`}
+          style={{ padding: '6px 12px', fontSize: '10px', borderRadius: '8px' }}
+        >
+          GPU Composite (transform: scale)
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+        
+        {/* Animated Object view */}
+        <div style={{
+          width: '180px',
+          height: '240px',
+          background: 'white',
+          border: '1.5px solid rgba(225,29,72,0.18)',
+          borderRadius: '24px',
+          boxShadow: '0 8px 25px rgba(0,0,0,0.03)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative'
+        }}>
+          {gpuEnabled ? (
+            <div style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #10b981, #34d399)',
+              boxShadow: '0 4px 10px rgba(16,185,129,0.2)',
+              transform: animate ? 'scale(1.4) rotate(10deg)' : 'scale(1) rotate(0deg)',
+              transition: 'transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}></div>
+          ) : (
+            <div style={{
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #ef4444, #f87171)',
+              boxShadow: '0 4px 10px rgba(239,68,68,0.2)',
+              width: animate ? '84px' : '60px',
+              height: animate ? '84px' : '60px',
+              transition: 'all 1.2s ease-in-out'
+            }}></div>
+          )}
+        </div>
+
+        {/* Meters and FPS display */}
+        <div style={{
+          width: '180px',
+          background: '#f8fafc',
+          padding: '16px',
+          borderRadius: '20px',
+          border: '1px solid #cbd5e1',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569', fontFamily: 'Kanit' }}>ความเร็วเฟรมเรต:</span>
+            <span style={{
+              fontSize: '18px',
+              fontWeight: 'bold',
+              color: gpuEnabled ? '#10b981' : '#ef4444',
+              fontFamily: 'Inter',
+              animation: !gpuEnabled ? 'pulse 0.5s infinite alternate' : 'none'
+            }}>
+              {gpuEnabled ? '60 FPS' : '15 FPS'}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569', fontFamily: 'Kanit' }}>สถานะการรัน:</span>
+            <span style={{
+              fontSize: '9px',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              background: gpuEnabled ? '#d1fae5' : '#fee2e2',
+              color: gpuEnabled ? '#065f46' : '#991b1b',
+              fontWeight: 'bold',
+              fontFamily: 'Kanit'
+            }}>
+              {gpuEnabled ? 'เสถียรลื่นไหล' : 'กระตุก Janky Lag'}
+            </span>
+          </div>
+
+          <hr style={{ border: 'none', borderTop: '1px solid #cbd5e1', margin: '4px 0' }} />
+
+          <p style={{ fontSize: '8px', color: '#64748b', lineHeight: '1.4', fontFamily: 'Kanit' }}>
+            {gpuEnabled 
+              ? '✓ ประมวลผลผ่าน GPU โดยตรง ไม่บังคับให้เว็บบราวเซอร์คำนวณตำแหน่งหน้าจอใหม่ ช่วยประหยัดแบตเตอรี่'
+              : '❌ บังคับให้เบราว์เซอร์คำนวณ Layout ใหม่ตลอดเวลา (Reflow/Repaint) ส่งผลให้เครื่องร้อนและกระตุก'}
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// 13. Motion Tokens Playground: Customizable Duration / Easing
+const MotionTokensPlayground = () => {
+  const [duration, setDuration] = useState('base'); // instant, fast, base, slow
+  const [easing, setEasing] = useState('standard'); // standard, enter, exit, spring
+  const [animate, setAnimate] = useState(false);
+
+  const durationValues = {
+    instant: 80,
+    fast: 150,
+    base: 250,
+    slow: 400
+  };
+
+  const easingValues = {
+    standard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    enter: 'cubic-bezier(0, 0, 0.2, 1)',
+    exit: 'cubic-bezier(0.4, 0, 1, 1)',
+    spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+  };
+
+  const handleTestTrigger = () => {
+    setAnimate(prev => !prev);
+  };
+
+  return (
+    <div className="visual-container" style={{ width: '100%' }}>
+      <span className="art-badge">แล็บกิจกรรมออกแบบระบบ Motion Tokens ประจำแอป</span>
+      
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+        
+        {/* Token selection selectors */}
+        <div style={{
+          width: '180px',
+          background: '#f8fafc',
+          padding: '16px',
+          borderRadius: '20px',
+          border: '1.5px solid #cbd5e1',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          <div>
+            <label style={{ fontSize: '9px', fontWeight: 'bold', color: '#475569', display: 'block', marginBottom: '4px', fontFamily: 'Kanit' }}>1. เลือก Duration Token:</label>
+            <select
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              style={{ width: '100%', padding: '6px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '10px', fontFamily: 'Inter' }}
+            >
+              <option value="instant">instant (80ms)</option>
+              <option value="fast">fast (150ms)</option>
+              <option value="base">base (250ms)</option>
+              <option value="slow">slow (400ms)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ fontSize: '9px', fontWeight: 'bold', color: '#475569', display: 'block', marginBottom: '4px', fontFamily: 'Kanit' }}>2. เลือก Easing Token:</label>
+            <select
+              value={easing}
+              onChange={(e) => setEasing(e.target.value)}
+              style={{ width: '100%', padding: '6px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '10px', fontFamily: 'Inter' }}
+            >
+              <option value="standard">ease-standard</option>
+              <option value="enter">ease-enter</option>
+              <option value="exit">ease-exit</option>
+              <option value="spring">ease-spring (ยืดหยุ่น)</option>
+            </select>
+          </div>
+
+          <button className="btn btn-primary" onClick={handleTestTrigger} style={{ padding: '8px', fontSize: '10px', width: '100%' }}>
+            🚀 ทดสอบแอนิเมชัน
+          </button>
+        </div>
+
+        {/* Demo object sandbox container */}
+        <div style={{
+          width: '240px',
+          height: '240px',
+          background: 'white',
+          border: '1.5px solid rgba(225,29,72,0.18)',
+          borderRadius: '24px',
+          boxShadow: '0 8px 25px rgba(0,0,0,0.03)',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Card body component */}
+          <div style={{
+            width: '180px',
+            padding: '12px',
+            background: '#fff1f2',
+            border: '1.5px solid #fb7185',
+            borderRadius: '16px',
+            boxShadow: '0 4px 10px rgba(225,29,72,0.04)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            transition: `all ${durationValues[duration]}ms ${easingValues[easing]}`,
+            transform: animate ? 'translateY(-20px) scale(1.05)' : 'translateY(0) scale(1)',
+            opacity: animate ? 0.9 : 1
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '12px' }}>🎁</span>
+              <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#e11d48', fontFamily: 'Kanit' }}>การ์ดคูปองส่งผลงาน</span>
+            </div>
+            
+            <div style={{ height: '6px', background: 'rgba(225,29,72,0.15)', borderRadius: '3px', width: '90%' }}></div>
+            <div style={{ height: '6px', background: 'rgba(225,29,72,0.15)', borderRadius: '3px', width: '60%' }}></div>
+
+            <button style={{
+              background: '#e11d48',
+              border: 'none',
+              color: 'white',
+              fontSize: '8px',
+              padding: '6px',
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              fontFamily: 'Kanit',
+              marginTop: '4px'
+            }}>
+              แลกสิทธิ์
+            </button>
+          </div>
+
+          <div style={{ marginTop: '16px', fontSize: '8px', color: '#94a3b8', textAlign: 'center', fontFamily: 'Kanit' }}>
+            ฟิสิกส์ที่สัมผัสได้จริงจากคู่ Tokens ล่าสุด
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
 // Main Router dispatcher for slide graphic components
 const GraphicDispatcher = ({ slide }) => {
   const type = slide ? slide.animationType : null;
@@ -2699,6 +4343,19 @@ const GraphicDispatcher = ({ slide }) => {
     case 'color-tones-demo': return <ColorTonesDemo />;
     case 'hsv-demo': return <HSVDemo />;
     case 'color-harmony-demo': return <ColorHarmonyDemo />;
+    case 'motion-intro': return <MotionIntroAnimation />;
+    case 'why-motion': return <WhyMotionAnimation />;
+    case 'gestalt-motion': return <GestaltMotionAnimation />;
+    case 'preattentive-reduced': return <PreattentiveReducedAnimation />;
+    case 'disney-ui': return <DisneyUIAnimation />;
+    case 'duration-lab': return <DurationLabAnimation />;
+    case 'easing-sandbox': return <EasingSandboxAnimation />;
+    case 'choreography-stagger': return <ChoreographyStaggerAnimation />;
+    case 'microinteraction-sandbox': return <MicrointeractionSandbox />;
+    case 'loading-comparison': return <LoadingComparisonAnimation />;
+    case 'animation-tools': return <AnimationToolsAnimation />;
+    case 'gpu-performance-sim': return <GpuPerformanceSim />;
+    case 'motion-tokens-playground': return <MotionTokensPlayground />;
     case 'portfolio-wireframe':
       return (
         <div style={{ 
@@ -2740,7 +4397,7 @@ const GraphicDispatcher = ({ slide }) => {
 export default function App() {
   // Load slides from localStorage or fallback to initialSlides
   const [slides, setSlides] = useState(() => {
-    const saved = localStorage.getItem('school_slides_v11');
+    const saved = localStorage.getItem('school_slides_v12');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -2755,7 +4412,7 @@ export default function App() {
   });
 
   const [teacherMode, setTeacherMode] = useState(false);
-  const [activeWeek, setActiveWeek] = useState(null); // null = Home page, 1 = Week 1, 2 = Week 2
+  const [activeWeek, setActiveWeek] = useState(null); // null = Home page, 1 = Week 1, 2 = Week 2, 3 = Week 3, 4 = Week 4
   const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
 
   // Teacher Passcode Modal
@@ -2771,7 +4428,7 @@ export default function App() {
 
   // Persist slides in localStorage
   useEffect(() => {
-    localStorage.setItem('school_slides_v11', JSON.stringify(slides));
+    localStorage.setItem('school_slides_v12', JSON.stringify(slides));
   }, [slides]);
 
   // Filter slides to show based on week and role
@@ -2975,6 +4632,16 @@ export default function App() {
                 <div className="week-num">Week 3 (สัปดาห์ที่ 3)</div>
                 <h3 className="week-title">การใช้สีในการออกแบบอินเตอร์เฟส</h3>
                 <p className="week-desc">เรียนรู้ความสำคัญของสี จิตวิทยาและทฤษฎีวรรณะของสี ระบบสีดิจิทัล HSV ตลอดจนสูตรการประสานคู่สี (Color Harmony) ทั้ง 7 แบบในงานดีไซน์</p>
+                <div className="week-action">
+                  <span>เริ่มศึกษาเนื้อหาบทเรียน</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+              </div>
+
+              <div className="week-card" onClick={() => { setActiveWeek(4); setCurrentSlideIdx(0); }}>
+                <div className="week-num">Week 4 (สัปดาห์ที่ 4)</div>
+                <h3 className="week-title">แอนิเมชันสำหรับการออกแบบ UX/UI</h3>
+                <p className="week-desc">เรียนรู้จิตวิทยาของการเคลื่อนไหว (Psychology of Motion) กฎแอนิเมชันสำหรับดิจิทัล UI หลักการเรื่องความเร็ว (Duration) และเส้นโค้งความเร่ง (Easing Curves)</p>
                 <div className="week-action">
                   <span>เริ่มศึกษาเนื้อหาบทเรียน</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
